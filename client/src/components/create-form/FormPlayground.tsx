@@ -81,7 +81,7 @@ export default function FormPlayground({
             >
               {isOver
                 ? 'Drop the element here ...'
-                : 'Drag a element from the right to this area'}
+                : 'Drag a element from the left to this area'}
             </p>
           ) : (
             <ScrollArea
