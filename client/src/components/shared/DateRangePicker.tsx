@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { CalendarDaysIcon } from 'lucide-react';
-import { format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 
 import { cn } from '@/lib/utils';
@@ -17,11 +16,21 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   field?: ControllerRenderProps<FieldValues, string>;
 }
 
+const formatPersianDate = (date?: Date) => {
+  if (!date) return '';
+
+  return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+};
+
 export function DateRangePicker({ className, field }: Props) {
   const [date, setDate] = React.useState<DateRange | undefined>();
 
   React.useEffect(() => {
-    setDate(field?.value ?? null);
+    setDate(field?.value ?? undefined);
   }, [field?.value]);
 
   return (
@@ -30,30 +39,31 @@ export function DateRangePicker({ className, field }: Props) {
         <PopoverTrigger asChild>
           <Button
             id="date"
-            variant={'outline'}
+            variant="outline"
             className={cn(
-              'w-[300px] justify-start text-left font-normal',
+              'w-[300px] justify-start text-right font-normal',
               !date && 'text-muted-foreground',
             )}
           >
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, 'LLL dd, y')} -{' '}
-                  {format(date.to, 'LLL dd, y')}
+                  {formatPersianDate(date.from)} - {formatPersianDate(date.to)}
                 </>
               ) : (
-                format(date.from, 'LLL dd, y')
+                formatPersianDate(date.from)
               )
             ) : (
-              <span>Pick a date range</span>
+              <span>انتخاب بازه تاریخ</span>
             )}
-            <CalendarDaysIcon className="ml-auto h-4 w-4" />
+
+            <CalendarDaysIcon className="mr-auto h-4 w-4" />
           </Button>
         </PopoverTrigger>
+
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
-            captionLayout="dropdown-buttons"
+            captionLayout="dropdown"
             fromYear={1960}
             toYear={2030}
             initialFocus

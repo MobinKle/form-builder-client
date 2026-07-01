@@ -11,7 +11,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Open Sans', ...defaultTheme.fontFamily.sans],
+        // فونت Vazirmatn را در ابتدای لیست فونت‌های sans قرار می‌دهیم
+        sans: ['Vazirmatn', 'Open Sans', ...defaultTheme.fontFamily.sans],
         mono: ['JetBrains Mono', ...defaultTheme.fontFamily.mono],
         cursive: 'Dancing Script',
       },

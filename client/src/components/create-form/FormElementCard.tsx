@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { GripVerticalIcon, Trash2Icon } from 'lucide-react';
 import {
   type AnimateLayoutChanges,
@@ -31,11 +32,96 @@ import { RadioGroup, RadioGroupItem } from '../ui/RadioGroup';
 import { Combobox } from '../ui/Combobox';
 import type { ControllerRenderProps, FieldValues } from 'react-hook-form';
 
+import { useTranslation } from 'react-i18next';
+
 const animateLayoutChanges: AnimateLayoutChanges = args => {
   const { isSorting, wasDragging } = args;
   if (isSorting || wasDragging) return defaultAnimateLayoutChanges(args);
   return true;
 };
+
+function normalizeType(type: string) {
+  switch (type) {
+    case 'کد عددی':
+    case 'numeric_code':
+    case 'numeric-code':
+      return 'numeric-code';
+
+    case 'متن آزاد':
+    case 'free-text':
+      return 'free-text';
+
+    case 'تک انتخابی':
+    case 'single-choice':
+      return 'single-choice';
+
+    case 'چند گزینه ای':
+    case 'چند گزینه‌ای':
+    case 'multi-option':
+      return 'multi-option';
+
+    case 'چند انتخابی - عددی':
+    case 'multi-number-choice':
+      return 'multi-number-choice';
+
+    case 'تاریخ':
+    case 'custom-date':
+      return 'date';
+
+    case 'عکس':
+    case 'custom-image':
+      return 'image';
+
+    case 'کدملی':
+    case 'کد ملی':
+    case 'national-code':
+      return 'national-code';
+
+    case 'شماره موبایل':
+    case 'موبایل':
+    case 'mobile':
+      return 'mobile';
+
+    case 'شماره تلفن':
+    case 'phone':
+    case 'phone-number':
+      return 'phone-number';
+
+    case 'ایمیل':
+    case 'email':
+      return 'email';
+
+    case 'اسلایدر':
+    case 'slider':
+      return 'slider';
+
+    case 'شماره کارت':
+    case 'card-number':
+      return 'card-number';
+
+    case 'شماره شبا':
+    case 'iban':
+      return 'iban';
+
+    default:
+      return type;
+  }
+}
+
+const optionBuilderTypes = [
+  'checklist',
+  'multi-choice',
+  'dropdown',
+  'combobox',
+  'single-choice',
+  'multi-option',
+  'multi-number-choice',
+];
+
+const noRequiredTypes = ['heading', 'description', 'switch', 'checkbox'];
+const noFieldTypes = ['heading', 'description'];
+
+const onlyNumbers = (value: string) => value.replace(/\D/g, '');
 
 interface Props {
   formElement: FormElementsType;
@@ -48,7 +134,11 @@ export default function FormElementCard({
   isView = false,
   field,
 }: Props) {
-  const { id, label, type, required, options } = formElement;
+  const { id, label, required, options } = formElement;
+  const type = normalizeType(formElement.type);
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'fa';
+
   const removeFormElement = useFormPlaygroundStore(
     state => state.removeFormElement,
   );
@@ -72,10 +162,10 @@ export default function FormElementCard({
   };
 
   return (
-    <article
+    <article dir={isRtl ? 'rtl' : 'ltr'}
       className={`relative flex gap-2 rounded-md bg-white py-3 shadow ${
         isDragging ? 'z-10' : ''
-      } ${isView ? 'px-5' : 'pl-2 pr-4'}`}
+      } ${isView ? 'px-5' : 'ps-2 pe-4'}`}
       ref={setNodeRef}
       style={cardStyle}
     >
@@ -90,11 +180,10 @@ export default function FormElementCard({
           <GripVerticalIcon className="h-7 w-7 text-muted-foreground transition-colors duration-200" />
         </div>
       )}
+
       <div
         className={`flex-grow space-y-2 ${
-          ['heading', 'description', 'checkbox', 'switch'].includes(type)
-            ? ''
-            : 'pb-2'
+          noFieldTypes.includes(type) ? '' : 'pb-2'
         }`}
       >
         <div className="flex items-center gap-8">
@@ -110,6 +199,7 @@ export default function FormElementCard({
                 onCheckedChange={field?.onChange}
               />
             ) : null}
+
             <BubbleMenuEditor
               placeholder={
                 ['heading', 'description'].includes(type)
@@ -123,11 +213,10 @@ export default function FormElementCard({
               readOnly={isView}
             />
           </div>
+
           {isView ? null : (
             <div className="flex items-center">
-              {['heading', 'description', 'switch', 'checkbox'].includes(
-                type,
-              ) ? null : (
+              {noRequiredTypes.includes(type) ? null : (
                 <div className="flex items-center gap-2">
                   <Switch
                     id={'required-' + id}
@@ -138,12 +227,14 @@ export default function FormElementCard({
                     className="cursor-pointer font-normal"
                     htmlFor={'required-' + id}
                   >
-                    Required
+                    {t('formBuilder.required', 'اجباری')}
                   </Label>
                 </div>
               )}
+
               <Separator orientation="vertical" className="mx-4 h-7" />
-              <Tooltip asChild title="Delete">
+
+              <Tooltip asChild title={t('common.delete', 'Delete')}>
                 <Button
                   type="button"
                   variant="ghost"
@@ -159,96 +250,197 @@ export default function FormElementCard({
             </div>
           )}
         </div>
+
         {type === 'single-line' ? (
           <Input
             placeholder="Single line text"
-            required={field ? required : false}
-            value={field?.value ?? ''}
-            onChange={field?.onChange}
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: field.onChange,
+                }
+              : {
+                  defaultValue: '',
+                })}
           />
         ) : type === 'number' ? (
           <Input
             type="number"
+            dir={isRtl ? 'rtl' : 'ltr'}
             placeholder="Number"
-            required={field ? required : false}
-            value={field?.value ?? ''}
-            onChange={field?.onChange}
+            className={isRtl ? 'text-right' : 'text-left'}
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: field.onChange,
+                }
+              : {
+                  defaultValue: '',
+                })}
+          />
+        ) : type === 'numeric-code' ? (
+          <Input
+            type="tel"
+            dir={isRtl ? 'rtl' : 'ltr'}
+            inputMode="numeric"
+            placeholder={t('formBuilder.numericCode', 'کد عددی')}
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                    field.onChange(onlyNumbers(e.target.value));
+                  },
+                }
+              : {
+                  defaultValue: '',
+                })}
           />
         ) : type === 'multi-line' ? (
           <Textarea
             placeholder="Multi line text..."
-            required={field ? required : false}
-            value={field?.value ?? ''}
-            onChange={field?.onChange}
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: field.onChange,
+                }
+              : {
+                  defaultValue: '',
+                })}
+          />
+        ) : type === 'free-text' ? (
+          <Textarea
+            placeholder={t('formBuilder.freeTextPlaceholder', 'متن آزاد...')}
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: field.onChange,
+                }
+              : {
+                  defaultValue: '',
+                })}
           />
         ) : type === 'rich-text' ? (
           <RichTextEditor field={field} />
-        ) : ['checklist', 'multi-choice', 'dropdown', 'combobox'].includes(
-            type,
-          ) && !isView ? (
+        ) : optionBuilderTypes.includes(type) && !isView ? (
           <Options type={type} id={id} />
-        ) : type === 'checklist' ? (
-          <ul className="space-y-3">
-            {options?.map(({ label, value }) => (
+        ) : ['checklist', 'multi-option'].includes(type) ? (
+          <ul className="gap-3">
+            {options?.map(({ label, value }, index) => (
               <li key={value} className="flex items-center gap-3">
                 <Checkbox
                   id={value}
-                  checked={field?.value?.includes(label) ?? false}
+                  checked={field?.value?.includes?.(value) ?? false}
                   onCheckedChange={checked => {
-                    if (checked) field?.onChange([...field.value, label]);
-                    else
+                    const currentValues = Array.isArray(field?.value)
+                      ? field.value
+                      : [];
+
+                    if (checked) {
+                      field?.onChange([...currentValues, value]);
+                    } else {
                       field?.onChange(
-                        field.value.filter((val: string) => val !== label),
+                        currentValues.filter((val: string) => val !== value),
                       );
+                    }
                   }}
                 />
                 <Label
                   htmlFor={value}
                   className="flex h-5 items-center font-normal"
                 >
-                  {label}
+                  {label || `${t('formBuilder.option')} ${index + 1}`}
                 </Label>
               </li>
             ))}
           </ul>
-        ) : type === 'multi-choice' ? (
+        ) : ['multi-choice', 'single-choice'].includes(type) ? (
           <RadioGroup
             className="gap-3"
             value={field?.value}
             onValueChange={field?.onChange}
           >
-            {options?.map(({ label, value }) => (
-              <div key={value} className="flex items-center space-x-3">
+            {options?.map(({ label, value }, index) => (
+              <div key={value} className="flex items-center gap-3">
                 <RadioGroupItem value={value} id={value} />
                 <Label
                   htmlFor={value}
                   className="flex h-5 items-center font-normal"
                 >
-                  {label}
+                  {label || `${t('formBuilder.option')} ${index + 1}`}
                 </Label>
               </div>
             ))}
           </RadioGroup>
+        ) : type === 'multi-number-choice' ? (
+          <ul className="space-y-3">
+            {options?.map(({ label, value }, index) => {
+              const rawValue = String(value ?? label ?? '');
+              const numericValue = rawValue.replace(/\D/g, '');
+
+              if (!numericValue) return null;
+
+              const optionId = `multi-number-${id}-${index}`;
+
+              return (
+                <li key={optionId} className="flex items-center gap-3">
+                  <Checkbox
+                    id={optionId}
+                    checked={field?.value?.includes?.(numericValue) ?? false}
+                    onCheckedChange={checked => {
+                      const currentValues = Array.isArray(field?.value)
+                        ? field.value
+                        : [];
+
+                      if (checked) {
+                        field?.onChange(
+                          currentValues.includes(numericValue)
+                            ? currentValues
+                            : [...currentValues, numericValue],
+                        );
+                      } else {
+                        field?.onChange(
+                          currentValues.filter(
+                            (val: string) => val !== numericValue,
+                          ),
+                        );
+                      }
+                    }}
+                  />
+                  <Label
+                    htmlFor={optionId}
+                    className="flex h-5 items-center font-normal"
+                  >
+                    {numericValue}
+                  </Label>
+                </li>
+              );
+            })}
+          </ul>
         ) : type === 'dropdown' ? (
           <Select
             value={field?.value}
             onValueChange={field?.onChange}
-            required={field ? required : false}
+            required={!!field && required}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select an option..." />
+              <SelectValue placeholder={t('formBuilder.selectOptionPlaceholder', 'Select an option...')} />
             </SelectTrigger>
             <SelectContent>
-              {options?.map(({ label, value }) => (
+              {options?.map(({ label, value }, index) => (
                 <SelectItem value={value} key={value}>
-                  {label}
+                  {label || `${t('formBuilder.option')} ${index + 1}`}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         ) : type === 'combobox' && options ? (
           <Combobox options={options} field={field} />
-        ) : type === 'date' ? (
+        ) : ['date', 'custom-date'].includes(type) ? (
           <DatePicker field={field} />
         ) : type === 'date-range' ? (
           <DateRangePicker field={field} />
@@ -256,28 +448,181 @@ export default function FormElementCard({
           <Input
             type="time"
             className="w-32"
-            required={field ? required : false}
-            value={field?.value ?? ''}
-            onChange={field?.onChange}
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: field.onChange,
+                }
+              : {
+                  defaultValue: '',
+                })}
+          />
+        ) : type === 'mobile' ? (
+          <Input
+            type="tel"
+            dir={isRtl ? 'rtl' : 'ltr'}
+            inputMode="numeric"
+            maxLength={11}
+            placeholder="09xxxxxxxxx"
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                    const value = onlyNumbers(e.target.value).slice(0, 11);
+                    field.onChange(value);
+                  },
+                }
+              : {
+                  defaultValue: '',
+                })}
+          />
+        ) : ['phone', 'phone-number'].includes(type) ? (
+          <Input
+            type="tel"
+            dir={isRtl ? 'rtl' : 'ltr'}
+            inputMode="numeric"
+            maxLength={11}
+            placeholder="021xxxxxxxx"
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                    const value = onlyNumbers(e.target.value).slice(0, 11);
+                    field.onChange(value);
+                  },
+                }
+              : {
+                  defaultValue: '',
+                })}
+          />
+        ) : type === 'national-code' ? (
+          <Input
+            type="tel"
+            inputMode="numeric"
+            maxLength={10}
+            dir='ltr'
+            placeholder={t('formBuilder.nationalCode', 'کد ملی')}
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                    const value = onlyNumbers(e.target.value).slice(0, 10);
+                    field.onChange(value);
+                  },
+                }
+              : {
+                  defaultValue: '',
+                })}
+          />
+        ) : type === 'email' ? (
+          <Input
+            type="email"
+            placeholder="example@email.com"
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: field.onChange,
+                }
+              : {
+                  defaultValue: '',
+                })}
+          />
+        ) : type === 'slider' ? (
+          <div className="flex flex-col gap-2" dir={isRtl ? 'rtl' : 'ltr'}>
+            <Input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              className="h-6 cursor-pointer"
+              required={!!field && required}
+              {...(field
+                ? {
+                    value: field.value ?? 0, 
+                    onChange: (e) => {
+                      const val = parseInt(e.target.value, 10);
+                      field.onChange(isNaN(val) ? 0 : val);
+                    },
+                  }
+                : {
+                    defaultValue: 0,
+                  })}
+            />
+            <div className="flex justify-between items-center px-1">
+              <span className="text-sm text-muted-foreground">
+                {t('formBuilder.selectedValue', 'مقدار انتخاب شده:')}
+              </span>
+              <span className="font-bold text-primary">
+                {field?.value ?? 0}
+              </span>
+            </div>
+          </div>
+        ) : type === 'card-number' ? (
+          <Input
+            type="tel"
+            inputMode="numeric"
+            dir='ltr'
+            maxLength={16}
+            placeholder={t('formBuilder.cardNumber', 'شماره کارت')}
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                    const value = onlyNumbers(e.target.value).slice(0, 16);
+                    field.onChange(value);
+                  },
+                }
+              : {
+                  defaultValue: '',
+                })}
+          />
+        ) : type === 'iban' ? (
+          <Input
+            type="text"
+            dir='ltr'
+            maxLength={26}
+            placeholder="IRxxxxxxxxxxxxxxxxxxxxxxxx"
+            required={!!field && required}
+            {...(field
+              ? {
+                  value: field.value ?? '',
+                  onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value
+                      .replace(/[^a-zA-Z0-9]/g, '')
+                      .toUpperCase()
+                      .slice(0, 26);
+                    field.onChange(value);
+                  },
+                }
+              : {
+                  defaultValue: '',
+                })}
           />
         ) : type === 'attachments' ? (
           <Input
             type="file"
             className="pt-1.5 text-muted-foreground"
-            required={field ? required : false}
-            value={field?.value ?? ''}
+            required={!!field && required}
             onChange={field?.onChange}
           />
-        ) : type === 'image' ? (
+        ) : ['image', 'custom-image'].includes(type) ? (
           <Input
             type="file"
             accept="image/*"
             className="pt-1.5 text-muted-foreground"
-            required={field ? required : false}
-            value={field?.value ?? ''}
+            required={!!field && required}
             onChange={field?.onChange}
           />
-        ) : null}
+        ) : (
+          <Input placeholder="Unsupported field type" disabled />
+        )}
+
         {isView && required ? (
           <div className="pt-1 text-sm text-destructive">* Required</div>
         ) : null}

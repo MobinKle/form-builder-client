@@ -14,6 +14,8 @@ import Settings from './pages/Settings';
 import MyForms from './pages/MyForms';
 import UpdateForm from './pages/UpdateForm';
 import GeneratedForm from './pages/GeneratedForm';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const router = createBrowserRouter([
   {
@@ -86,5 +88,14 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    const currentDir = i18n.dir(); 
+    document.documentElement.dir = currentDir;
+    document.documentElement.lang = i18n.language;
+    document.body.className = currentDir;
+  }, [i18n.language, i18n]);
+
   return <RouterProvider router={router} />;
 }

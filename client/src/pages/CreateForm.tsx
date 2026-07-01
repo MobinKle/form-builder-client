@@ -33,6 +33,7 @@ import DemoInfoCard from '../components/create-form/DemoInfoCard';
 import type { FormType } from '../types';
 import { Switch } from '../components/ui/Switch';
 import FormPreview from '../components/create-form/FormPreview';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   formType?: 'add' | 'edit';
@@ -40,6 +41,7 @@ interface Props {
 }
 
 export default function CreateForm({ formType = 'add', form }: Props) {
+  const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -90,12 +92,18 @@ export default function CreateForm({ formType = 'add', form }: Props) {
       });
       setFormName('');
       removeAllFormElements();
-      toast.success(
-        `Form ${formType === 'add' ? 'created' : 'updated'} successfully`,
-      );
+toast.success(
+  formType === 'add'
+    ? t('formBuilder.createdSuccessfully')
+    : t('formBuilder.updatedSuccessfully'),
+);
     },
     onError: () =>
-      toast.error(`Error ${formType === 'add' ? 'creating' : 'updating'} form`),
+  toast.error(
+    formType === 'add'
+      ? t('formBuilder.createError')
+      : t('formBuilder.updateError'),
+  ),
   });
 
   return (
@@ -119,53 +127,68 @@ export default function CreateForm({ formType = 'add', form }: Props) {
         setIsDropped(true);
       }}
     >
-      <div className="flex gap-12">
-        <FormElements isUpdate={formType === 'edit'} />
+<div className={`flex gap-12 ${i18n.language === 'en' ? 'flex-row-reverse' : 'flex-row'}`}>
+  <FormElements isUpdate={formType === 'edit'} />
         <form
           className="flex flex-grow flex-col"
-          onSubmit={e => {
-            e.preventDefault();
-            if (formElements.length === 0) {
-              toast.error('Form is empty!');
-              return;
-            }
-            mutate();
-          }}
+onSubmit={e => {
+  e.preventDefault();
+
+  if (formElements.length === 0) {
+toast.error(t('formBuilder.emptyForm'));
+    return;
+  }
+
+  const formJson = {
+    name: formName,
+    elements: formElements,
+  };
+
+  console.log('Form JSON:', formJson);
+  console.log('Form JSON String:', JSON.stringify(formJson, null, 2));
+
+  mutate();
+}}
+
         >
-          <section className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-3 whitespace-nowrap">
-              <label className="font-medium">Form Name:</label>
-              <Input
-                required
-                placeholder="Enter form name"
-                value={formName}
-                onChange={e => setFormName(e.target.value)}
-              />
-            </div>
-            <div className="flex items-center gap-4 text-sm font-medium">
-              <div
-                className={`flex items-center gap-2 transition-colors ${
-                  isPreview ? '' : 'text-primary'
-                }`}
-              >
-                <HammerIcon className="h-5 w-5" />
-                <span>Builder</span>
-              </div>
-              <Switch
-                className="data-[state=unchecked]:bg-primary"
-                checked={isPreview}
-                onCheckedChange={setIsPreview}
-              />
-              <div
-                className={`flex items-center gap-2 transition-colors ${
-                  isPreview ? 'text-primary' : ''
-                }`}
-              >
-                <EyeIcon className="h-5 w-5" />
-                <span>Preview</span>
-              </div>
-            </div>
-          </section>
+<section className={`mb-3 flex items-center justify-between ${i18n.language === 'en' ? 'flex-row-reverse' : ''}`}>
+<div 
+  className={`flex items-center gap-3 ${i18n.language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}
+>
+  <label className="whitespace-nowrap font-medium">
+    {t('formBuilder.title')}
+  </label>
+
+  <Input
+    required
+    dir={i18n.language === 'en' ? 'ltr' : 'rtl'} 
+    className={`h-10 w-[280px] px-3 leading-10 ${
+      i18n.language === 'en' ? 'text-left' : 'text-right'
+    }`}
+    value={formName}
+    onChange={e => setFormName(e.target.value)}
+    placeholder={t('formBuilder.enterTitle')} 
+  />
+</div>
+
+
+
+  <div className={`flex items-center gap-4 text-sm font-medium ${i18n.language === 'en' ? 'flex-row-reverse' : ''}`}>
+    <div className={`flex items-center gap-2 transition-colors ${isPreview ? '' : 'text-primary'}`}>
+      <HammerIcon className="h-5 w-5" />
+      <span>{t('formBuilder.builder')}</span>
+    </div>
+    <Switch
+      className="data-[state=unchecked]:bg-primary"
+      checked={isPreview}
+      onCheckedChange={setIsPreview}
+    />
+    <div className={`flex items-center gap-2 transition-colors ${isPreview ? 'text-primary' : ''}`}>
+      <EyeIcon className="h-5 w-5" />
+      <span>{t('formBuilder.preview')}</span>
+    </div>
+  </div>
+</section>
           {isPreview ? (
             <FormPreview />
           ) : (
@@ -175,47 +198,51 @@ export default function CreateForm({ formType = 'add', form }: Props) {
               isUpdate={formType === 'edit'}
             />
           )}
-          <section className="mt-5 flex items-center gap-5 self-end">
-            {isDemo && <DemoInfoCard />}
-            {form ? (
-              <Button onClick={() => navigate('/my-forms')} variant="outline">
-                Cancel
-              </Button>
-            ) : null}
-            {formElements.length !== 0 ? (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button type="button" variant="destructive">
-                    Clear Form
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Clear Form?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Are you sure you want to clear the form? This action is
-                      irreversible and will permanently remove all the progress
-                      in the current form.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter className="sm:space-x-4">
-                    <AlertDialogAction onClick={removeAllFormElements}>
-                      Yes, clear form
-                    </AlertDialogAction>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            ) : null}
-            <Button
-              disabled={isDemo}
-              isLoading={isPending}
-              className={isDemo ? 'gap-2.5' : ''}
-            >
-              {isDemo && <LockIcon className="h-[18px] w-[18px]" />}
-              <span>{form ? 'Update Form' : 'Save Form'}</span>
-            </Button>
-          </section>
+<section className={`mt-5 flex items-center gap-5 ${i18n.language === 'en' ? 'justify-start' : 'justify-end'}`}>
+  {isDemo && <DemoInfoCard />}
+  
+  {form ? (
+    <Button onClick={() => navigate('/my-forms')} variant="outline">
+      {t('formBuilder.cancelEdit')}
+    </Button>
+  ) : null}
+
+  {formElements.length !== 0 ? (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button type="button" variant="destructive">
+          {t('formBuilder.deleteForm')}
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent dir={i18n.language === 'fa' ? 'rtl' : 'ltr'}>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t('formBuilder.deleteForm')}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t('formBuilder.deleteFormConfirm')}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="gap-3">
+          <AlertDialogAction onClick={removeAllFormElements}>
+            {t('formBuilder.deleteFormApprove')}
+          </AlertDialogAction>
+          <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  ) : null}
+
+  <Button
+    disabled={isDemo}
+    isLoading={isPending}
+    className={isDemo ? 'gap-2.5' : ''}
+  >
+    {isDemo && <LockIcon className="h-[18px] w-[18px]" />}
+    <span>
+      {form ? t('formBuilder.updateForm') : t('formBuilder.saveForm')}
+    </span>
+  </Button>
+</section>
+
         </form>
       </div>
       <DragOverlay modifiers={[restrictToWindowEdges]}>

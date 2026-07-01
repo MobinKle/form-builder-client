@@ -1,0 +1,62 @@
+{
+  "common": {
+    "submit": "ثبت",
+    "cancel": "لغو",
+    "save": "ذخیره",
+    "edit": "ویرایش",
+    "yes": "بله",
+    "delete": "حذف"
+  },
+  "formBuilder": {
+    "title": "عنوان پرسشنامه",
+    "titlePlaceholder": "عنوان پرسشنامه را وارد نمایید.",
+    "builder": "ساخت فرم",
+    "preview": "پیش نمایش",
+    "closePreview": "بستن",
+    "emptyForm": "فرم خالی است!",
+    "deleteForm": "حذف فرم",
+    "deleteFormConfirm": "مطمئنی؟",
+    "deleteFormApprove": "بله مطمئنم",
+    "saveForm": "ذخیره کردن",
+    "updateForm": "بروزرسانی فرم",
+    "cancelEdit": "لغو",
+    "createdSuccessfully": "فرم با موفقیت ساخته شد",
+    "updatedSuccessfully": "فرم با موفقیت بروزرسانی شد",
+    "createError": "خطا در ساخت فرم",
+    "updateError": "خطا در بروزرسانی فرم",
+    "option": "گزینه",
+    "cardNumber" : "شماره کارت",
+    "nationalCode" : "کد ملی",
+    "selectOptionPlaceholder" : "گزینه ای را انتخاب نمایید.",
+    "freeTextPlaceholder" : "متن آزاد",
+    "numericCode" : "کد عددی",
+    "required" : "اجباری",
+    "dropHere": "در اینجا رها کنید...",
+    "emptyPlayground": "المنت انتخابی را از سمت راست بگیرید و در اینجا رها نمایید.",
+    "dragAndDropHere": "عناصر مورد نظر بکشید و در پرسشنامه رها کنید",
+    "searching": "جستجو کنید",
+    "formElements": "المنت های فرم",
+    "dragformElements": "المنتی را جهت ساخت فرم اضافه نمایید.",
+    "enterTitle" : "عنوان را وارد نمایید...",
+    "addOption": "اضافه کردن",
+"selectDate": "تاریخ را انتخاب نمایید"
+  },
+  "formElements": {
+    "numeric-code": "کد عددی",
+    "free-text": "متن آزاد",
+    "single-choice": "تک انتخابی",
+    "multi-option": "چند گزینه‌ای",
+    "multi-number-choice": "چند انتخابی - عددی",
+    "custom-date": "تاریخ",
+    "custom-image": "عکس",
+    "national-code": "کد ملی",
+    "mobile": "شماره موبایل",
+    "phone-number": "شماره تلفن",
+    "email": "ایمیل",
+    "slider": "اسلایدر",
+    "card-number": "شماره کارت",
+    "iban": "شماره شبا"
+  }
+}
+
+

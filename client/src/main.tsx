@@ -10,6 +10,9 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import App from './App.tsx';
 import AuthProvider from './contexts/AuthContext.tsx';
 
+
+import "./lib/i18n";
+
 if (process.env.NODE_ENV === 'production') {
   disableReactDevTools();
 }

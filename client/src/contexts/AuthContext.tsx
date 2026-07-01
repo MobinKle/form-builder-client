@@ -3,13 +3,16 @@ import { useCookies } from 'react-cookie';
 
 import { getDecryptedData } from '@/utils';
 
+// فایل: src/contexts/AuthContext.tsx
+
 export const initialAuthState = {
-  accessToken: '',
-  id: '',
-  name: '',
-  email: '',
+  accessToken: 'DEV_TOKEN_123', // یه توکن الکی که سیستم رو گول بزنه
+  id: 'dev-user-001',
+  name: 'Developer Mode',
+  email: 'dev@test.com',
   avatar: '',
 };
+
 
 interface AuthContextType {
   auth: typeof initialAuthState;

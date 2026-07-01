@@ -1,5 +1,6 @@
 import { Link, Outlet, NavLink } from 'react-router-dom';
 import UserNav from '../components/header/UserNav';
+import { LanguageSwitcher } from '../components/header/LanguageSwitcher';
 
 const navItems = [
   {
@@ -44,7 +45,10 @@ export default function BaseLayout() {
               ))}
             </ul>
           </nav>
-          <UserNav />
+<div className="flex items-center gap-3">
+  <LanguageSwitcher />
+  <UserNav />
+</div>
         </div>
       </header>
       <main className="mx-auto mt-16 max-w-[1440px] px-6 py-5">

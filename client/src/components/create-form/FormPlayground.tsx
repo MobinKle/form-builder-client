@@ -19,6 +19,7 @@ import { KeyboardSensor, PointerSensor } from '../../lib/dndKitSensors';
 import { ScrollArea } from '../ui/ScrollArea';
 import { useRef } from 'react';
 import { useFormPlaygroundStore } from '../../stores/formPlaygroundStore';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   isDropped: boolean;
@@ -35,7 +36,8 @@ export default function FormPlayground({
   const moveFormElement = useFormPlaygroundStore(
     state => state.moveFormElement,
   );
-
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'fa';
   const { setNodeRef, isOver } = useDroppable({
     id: 'droppable',
   });
@@ -55,6 +57,16 @@ export default function FormPlayground({
     }, 500);
   }
 
+  function handleDragEnd({ active, over }: DragEndEvent) {
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      const oldIndex = active.data.current?.sortable.index as number;
+      const newIndex = over.data.current?.sortable.index as number;
+      moveFormElement(oldIndex, newIndex);
+    }
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -69,19 +81,20 @@ export default function FormPlayground({
       >
         <section
           ref={setNodeRef}
+          dir={isRtl ? 'rtl' : 'ltr'}
           className={`flex-grow rounded-lg border-2 border-dashed bg-muted/25 ${
             isOver ? 'border-muted-foreground' : 'border-slate-300'
           }`}
         >
           {formElements.length === 0 ? (
             <p
-              className={`flex h-full items-center justify-center font-medium ${
+              className={`flex h-full items-center justify-center px-6 text-center font-medium ${
                 isOver ? 'text-slate-700' : 'text-muted-foreground'
               }`}
             >
               {isOver
-                ? 'Drop the element here ...'
-                : 'Drag a element from the left to this area'}
+                ? t('formBuilder.dropHere', 'در اینجا رها کنید...')
+                : t('formBuilder.emptyPlayground', 'المنت انتخابی را از سمت راست بگیرید و در اینجا رها نمایید.')}
             </p>
           ) : (
             <ScrollArea
@@ -101,14 +114,4 @@ export default function FormPlayground({
       </SortableContext>
     </DndContext>
   );
-
-  function handleDragEnd({ active, over }: DragEndEvent) {
-    if (!over) return;
-
-    if (active.id !== over.id) {
-      const oldIndex = active.data.current?.sortable.index as number;
-      const newIndex = over.data.current?.sortable.index as number;
-      moveFormElement(oldIndex, newIndex);
-    }
-  }
 }

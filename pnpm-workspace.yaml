@@ -2,3 +2,8 @@ packages:
   - client
   - server
   - packages/*
+allowBuilds:
+  '@swc/core': true
+  bcrypt: true
+  esbuild: true
+  sharp: true

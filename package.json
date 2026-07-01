@@ -11,5 +11,9 @@
   "license": "ISC",
   "devDependencies": {
     "prettier": "^3.0.3"
+  },
+  "dependencies": {
+    "date-fns-jalali": "^4.4.0-0",
+    "react-day-picker": "^10.0.1"
   }
 }

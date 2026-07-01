@@ -19,15 +19,33 @@ interface FormPlaygroundStoreType {
   removeAllFormElements: () => void;
 }
 
+const optionFieldTypes = [
+  'checklist',
+  'multi-choice',
+  'dropdown',
+  'combobox',
+  'single-choice',
+  'multi-option',
+  'multi-number-choice',
+];
+
+   const createOption = (index: number, type?: string) => ({
+     label: `Option ${index}`,
+     value: type === 'multi-number-choice' ? String(index) : uuid(),
+   });
+
+
 export const useFormPlaygroundStore = createWithEqualityFn(
   immer<FormPlaygroundStoreType>(set => ({
     formElements: [],
+
     setFormElements: formElements =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
           draft.formElements = formElements;
         }),
       ),
+
     addFormElement: (label, type) =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
@@ -36,20 +54,13 @@ export const useFormPlaygroundStore = createWithEqualityFn(
             label,
             type,
             required: false,
-            options: [
-              'checklist',
-              'multi-choice',
-              'dropdown',
-              'combobox',
-            ].includes(type)
-              ? [
-                  { label: 'Option 1', value: uuid() },
-                  { label: 'Option 2', value: uuid() },
-                ]
+            options: optionFieldTypes.includes(type)
+              ? [createOption(1, type), createOption(2, type)]
               : undefined,
           });
         }),
       ),
+
     moveFormElement: (oldIndex, newIndex) =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
@@ -60,6 +71,7 @@ export const useFormPlaygroundStore = createWithEqualityFn(
           );
         }),
       ),
+
     updateLabel: (id, label) =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
@@ -71,6 +83,7 @@ export const useFormPlaygroundStore = createWithEqualityFn(
           });
         }),
       ),
+
     toggleRequired: id =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
@@ -82,20 +95,23 @@ export const useFormPlaygroundStore = createWithEqualityFn(
           });
         }),
       ),
+
     addOption: id =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
           draft.formElements.forEach(el => {
             if (el.id === id) {
-              el.options?.push({
-                label: 'Option ' + (el.options.length + 1),
-                value: uuid(),
-              });
+              if (!el.options) {
+                el.options = [];
+              }
+
+              el.options.push(createOption(el.options.length + 1, el.type));
               return;
             }
           });
         }),
       ),
+
     updateOption: (id, optionId, label) =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
@@ -108,22 +124,26 @@ export const useFormPlaygroundStore = createWithEqualityFn(
           });
         }),
       ),
+
     deleteOption: (id, optionId) =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
           const formEl = draft.formElements.find(el => el.id === id);
-          if (formEl?.options)
+          if (formEl?.options) {
             formEl.options = formEl.options.filter(
               option => option.value !== optionId,
             );
+          }
         }),
       ),
+
     removeFormElement: id =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
           draft.formElements = draft.formElements.filter(el => el.id !== id);
         }),
       ),
+
     removeAllFormElements: () =>
       set(
         produce((draft: FormPlaygroundStoreType) => {
