@@ -7,6 +7,7 @@ import RecoverPassword from './pages/auth/RecoverPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import RequireAuth from './components/auth/RequireAuth';
 import CreateForm from './pages/CreateForm';
+import FormManagement from './pages/FormManagement';
 import BaseLayout from './layouts/BaseLayout';
 import PersistLogin from './components/auth/PersistLogin';
 import Error from './pages/Error';
@@ -16,6 +17,8 @@ import UpdateForm from './pages/UpdateForm';
 import GeneratedForm from './pages/GeneratedForm';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+
+
 
 const router = createBrowserRouter([
   {
@@ -73,6 +76,10 @@ const router = createBrowserRouter([
               {
                 path: '/settings',
                 element: <Settings />,
+              },
+              {
+                path: '/form-management',
+                element: <FormManagement />,
               },
             ],
           },
