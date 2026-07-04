@@ -5,7 +5,9 @@
     "save": "Save",
     "edit": "Edit",
     "yes": "Yes",
-    "delete": "Delete"
+    "delete": "Delete",
+    "select": "Select",
+    "loading": "Loading..."
   },
   "formBuilder": {
     "title": "Form title",
@@ -25,21 +27,21 @@
     "createError": "Error creating form",
     "updateError": "Error updating form",
     "option": "Option",
-    "cardNumber" : "CardNumber",
-    "nationalCode" : "NationalCode",
-    "selectOptionPlaceholder" : "SelectOptionPlaceholder",
-    "freeTextPlaceholder" : "FreeTextPlaceholder",
-    "numericCode" : "NumericCode",
-    "required" : "Required",
+    "cardNumber": "CardNumber",
+    "nationalCode": "NationalCode",
+    "selectOptionPlaceholder": "SelectOptionPlaceholder",
+    "freeTextPlaceholder": "FreeTextPlaceholder",
+    "numericCode": "NumericCode",
+    "required": "Required",
     "dropHere": "Drop here...",
     "emptyPlayground": "Drag an element from the right sidebar and drop it here.",
-     "dragAndDropHere": "Drag the element and drop into form",
-     "searching": "Search it",
-     "formElements": "Form Elements",
-     "dragformElements": "drag and drop an element for creating the form.",
-     "enterTitle" : "Write the title...",
-     "addOption": "Add option",
-     "selectDate": "select the Date"
+    "dragAndDropHere": "Drag the element and drop into form",
+    "searching": "Search it",
+    "formElements": "Form Elements",
+    "dragformElements": "drag and drop an element for creating the form.",
+    "enterTitle": "Write the title...",
+    "addOption": "Add option",
+    "selectDate": "select the Date"
   },
   "formElements": {
     "numeric-code": "Numeric Code",
@@ -56,6 +58,47 @@
     "slider": "Slider",
     "card-number": "Card Number",
     "iban": "IBAN"
-}
-
+  },
+  "createForm": {
+    "title": "Create New Questionnaire",
+    "description": "Create new questionnaire form including title, responder, registrar, dates, center, organization and structure",
+    "questionnaireTitle": "Questionnaire title",
+    "enterQuestionnaireTitle": "Enter questionnaire title",
+    "responder": "Responder",
+    "registrar": "Registrar",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "selectDate": "Select date",
+    "center": "Center",
+    "selectCenter": "Select center",
+    "organization": "Organization",
+    "selectOrganization": "Select organization",
+    "structure": "Structure",
+    "selectStructure": "Select structure",
+    "createQuestionnaire": "Create Questionnaire",
+    "optionsFetchError": "Failed to load form data",
+    "options": {
+      "user": "User",
+      "admin": "Admin",
+      "doctor": "Doctor",
+      "nurse": "Nurse",
+      "center-1": "Center 1",
+      "center-2": "Center 2",
+      "organization-1": "Organization 1",
+      "organization-2": "Organization 2",
+      "structure-1": "Structure 1",
+      "structure-2": "Structure 2"
+    },
+    "validation": {
+      "titleRequired": "Questionnaire title is required",
+      "responderRequired": "Please select a responder",
+      "registrarRequired": "Please select a registrar",
+      "startDateRequired": "Please select a start date",
+      "endDateRequired": "Please select an end date",
+      "endDateBeforeStartDate": "End date cannot be before start date",
+      "centerRequired": "Please select a center",
+      "organizationRequired": "Please select an organization",
+      "structureRequired": "Please select a structure"
+    }
+  }
 }

@@ -5,7 +5,9 @@
     "save": "ذخیره",
     "edit": "ویرایش",
     "yes": "بله",
-    "delete": "حذف"
+    "delete": "حذف",
+    "loading": "در حال بارگذاری...",
+    "select": "انتخاب کنید"
   },
   "formBuilder": {
     "title": "عنوان پرسشنامه",
@@ -39,7 +41,7 @@
     "dragformElements": "المنتی را جهت ساخت فرم اضافه نمایید.",
     "enterTitle" : "عنوان را وارد نمایید...",
     "addOption": "اضافه کردن",
-"selectDate": "تاریخ را انتخاب نمایید"
+    "selectDate": "تاریخ را انتخاب نمایید"
   },
   "formElements": {
     "numeric-code": "کد عددی",
@@ -56,7 +58,48 @@
     "slider": "اسلایدر",
     "card-number": "شماره کارت",
     "iban": "شماره شبا"
+  },
+  "createForm": {
+    "title": "ایجاد پرسشنامه جدید",
+    "description": "فرم ایجاد پرسشنامه جدید شامل عنوان، پاسخ‌دهنده، ثبت‌کننده، تاریخ‌ها، مرکز، سازمان و ساختار",
+    "questionnaireTitle": "عنوان پرسشنامه",
+    "enterQuestionnaireTitle": "عنوان پرسشنامه را وارد کنید",
+    "responder": "پاسخ‌دهنده",
+    "registrar": "ثبت‌کننده",
+    "startDate": "تاریخ شروع",
+    "endDate": "تاریخ پایان",
+    "selectDate": "انتخاب تاریخ",
+    "center": "مرکز",
+    "selectCenter": "انتخاب مرکز",
+    "organization": "سازمان",
+    "selectOrganization": "انتخاب سازمان",
+    "structure": "ساختار",
+    "selectStructure": "انتخاب ساختار",
+    "createQuestionnaire": "ایجاد پرسشنامه"
+  },
+    "options": {
+      "user": "کاربر",
+      "admin": "مدیر",
+      "doctor": "پزشک",
+      "nurse": "پرستار",
+      "center-1": "مرکز ۱",
+      "center-2": "مرکز ۲",
+      "organization-1": "سازمان ۱",
+      "organization-2": "سازمان ۲",
+      "structure-1": "ساختار ۱",
+      "structure-2": "ساختار ۲", 
+      "optionsFetchError": "خطا در دریافت اطلاعات فرم",
+      "validation": {
+      "titleRequired": "عنوان پرسشنامه الزامی است",
+      "responderRequired": "پاسخ‌دهنده را انتخاب کنید",
+      "registrarRequired": "ثبت‌کننده را انتخاب کنید",
+      "startDateRequired": "تاریخ شروع را انتخاب کنید",
+      "endDateRequired": "تاریخ پایان را انتخاب کنید",
+      "endDateBeforeStartDate": "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد",
+      "centerRequired": "مرکز را انتخاب کنید",
+      "organizationRequired": "سازمان را انتخاب کنید",
+      "structureRequired": "ساختار را انتخاب کنید"
+    }
   }
 }
-
 
