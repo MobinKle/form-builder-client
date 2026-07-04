@@ -1,16 +1,9 @@
 import axios from 'axios';
 
-export type SupportedLanguage = 'fa' | 'en';
-
-export type ApiLocalizedLabel = {
-  fa: string;
-  en: string;
-};
-
 export type ApiSelectOption = {
   id: number | string;
   value: string;
-  label: ApiLocalizedLabel;
+  title: string;
 };
 
 export type CreateFormOptionsResponse = {
@@ -45,30 +38,23 @@ function normalizeApiResponse(data: unknown): CreateFormOptionsResponse {
   return data as CreateFormOptionsResponse;
 }
 
-function mapLocalizedOptions(
-  options: ApiSelectOption[] = [],
-  language: string,
-): SelectOption[] {
-  const currentLanguage: SupportedLanguage = language === 'en' ? 'en' : 'fa';
-
+function mapOptions(options: ApiSelectOption[] = []): SelectOption[] {
   return options.map(option => ({
     value: option.value,
-    label: option.label[currentLanguage] ?? option.label.fa ?? option.value,
+    label: option.title || option.value,
   }));
 }
 
-export async function getCreateFormOptions(
-  language: string,
-): Promise<CreateFormSelectOptions> {
+export async function getCreateFormOptions(): Promise<CreateFormSelectOptions> {
   const response = await axios.get(CREATE_FORM_OPTIONS_URL);
 
   const data = normalizeApiResponse(response.data);
 
   return {
-    responderOptions: mapLocalizedOptions(data.responderOptions, language),
-    registrarOptions: mapLocalizedOptions(data.registrarOptions, language),
-    centerOptions: mapLocalizedOptions(data.centerOptions, language),
-    organizationOptions: mapLocalizedOptions(data.organizationOptions, language),
-    structureOptions: mapLocalizedOptions(data.structureOptions, language),
+    responderOptions: mapOptions(data.responderOptions),
+    registrarOptions: mapOptions(data.registrarOptions),
+    centerOptions: mapOptions(data.centerOptions),
+    organizationOptions: mapOptions(data.organizationOptions),
+    structureOptions: mapOptions(data.structureOptions),
   };
 }

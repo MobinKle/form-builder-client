@@ -317,44 +317,46 @@ export function CreateFormModal({
   const [optionsLoading, setOptionsLoading] = React.useState(false);
   const [optionsError, setOptionsError] = React.useState('');
 
-  React.useEffect(() => {
-    let isMounted = true;
+React.useEffect(() => {
+  let isMounted = true;
 
-    async function fetchCreateFormOptions() {
-      try {
-        setOptionsLoading(true);
-        setOptionsError('');
+  async function fetchCreateFormOptions() {
+    try {
+      setOptionsLoading(true);
+      setOptionsError('');
 
-        const options = await getCreateFormOptions(i18n.language);
+      const options = await getCreateFormOptions();
 
-        if (!isMounted) return;
+      if (!isMounted) return;
 
-        setResponderOptions(options.responderOptions);
-        setRegistrarOptions(options.registrarOptions);
-        setCenterOptions(options.centerOptions);
-        setOrganizationOptions(options.organizationOptions);
-        setStructureOptions(options.structureOptions);
-      } catch {
-        if (!isMounted) return;
+      setResponderOptions(options.responderOptions);
+      setRegistrarOptions(options.registrarOptions);
+      setCenterOptions(options.centerOptions);
+      setOrganizationOptions(options.organizationOptions);
+      setStructureOptions(options.structureOptions);
+    } catch {
+      if (!isMounted) return;
 
-        setOptionsError(
-          t('createForm.optionsFetchError', 'خطا در دریافت اطلاعات فرم'),
-        );
-      } finally {
-        if (isMounted) {
-          setOptionsLoading(false);
-        }
+      setOptionsError(
+        t('createForm.optionsFetchError', 'خطا در دریافت اطلاعات فرم'),
+      );
+    } finally {
+      if (isMounted) {
+        setOptionsLoading(false);
       }
     }
+  }
 
-    if (open) {
-      fetchCreateFormOptions();
-    }
+  if (open) {
+    fetchCreateFormOptions();
+  }
 
-    return () => {
-      isMounted = false;
-    };
-  }, [open, i18n.language, t]);
+  return () => {
+    isMounted = false;
+  };
+}, [open, t]);
+
+
 
   const updateValue = <Key extends keyof CreateFormValues>(
     key: Key,

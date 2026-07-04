@@ -35,7 +35,7 @@ export const validateCreateForm = (
 
   if (!values.title.trim()) {
     errors.title = t(
-      'createForm.validation.titleRequired',
+      'createForm.titleRequired',
       'عنوان پرسشنامه الزامی است',
     );
   }

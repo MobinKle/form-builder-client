@@ -1,20 +1,36 @@
-import { useTranslation } from 'react-i18next';
+import * as React from 'react';
+
+import { Button } from '@/components/ui/Button';
+import CreateFormModal from '@/components/Form-Management/CreateFormModal';
+import { CreateFormValues } from '@/components/Form-Management/CreateFormModal.form';
 
 export default function FormManagement() {
-  const { t } = useTranslation();
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const handleCreateForm = async (values: CreateFormValues) => {
+    setIsSubmitting(true);
+
+    try {
+      console.log('create form values:', values);
+
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-6 p-8">
-      <h1 className="text-2xl font-bold">
+    <div dir="rtl" className="p-6">
+      <Button onClick={() => setIsCreateModalOpen(true)}>
+        + ایجاد پرسشنامه جدید
+      </Button>
 
-        {t('Form Management')}
-      </h1>
-      
-      <div className="rounded-lg border border-dashed border-gray-300 p-10 text-center">
-        <p className="text-gray-500">
-          {t('This page is currently under development.')}
-        </p>
-      </div>
+      <CreateFormModal
+        open={isCreateModalOpen}
+        onOpenChange={setIsCreateModalOpen}
+        onSubmit={handleCreateForm}
+        isLoading={isSubmitting}
+      />
     </div>
   );
 }
