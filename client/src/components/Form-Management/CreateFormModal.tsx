@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { CalendarIcon, ChevronDown, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import {
   AlertDialog,
@@ -11,16 +12,12 @@ import {
 import { Button } from '@/components/ui/Button';
 import { Calendar } from '@/components/ui/Calendar';
 import { cn } from '@/lib/utils';
+import { getCreateFormOptions } from '@/services/formManagementModalOption';
 
 import {
-  centerOptions,
   createFormInitialValues,
   CreateFormValues,
-  organizationOptions,
-  registrarOptions,
-  responderOptions,
   SelectOption,
-  structureOptions,
   validateCreateForm,
 } from './CreateFormModal.form';
 
@@ -33,30 +30,50 @@ type CreateFormModalProps = {
 
 type FormErrors = Partial<Record<keyof CreateFormValues, string>>;
 
-const formatPersianDate = (date?: Date) => {
+const formatDate = (date: Date | undefined, isRtl: boolean) => {
   if (!date) return '';
 
-  return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+  return new Intl.DateTimeFormat(isRtl ? 'fa-IR-u-ca-persian' : 'en-US', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
   }).format(date);
 };
 
-function FieldError({ message }: { message?: string }) {
+function FieldError({
+  message,
+  isRtl,
+}: {
+  message?: string;
+  isRtl: boolean;
+}) {
   if (!message) return null;
 
-  return <p className="mt-1 text-xs text-destructive">{message}</p>;
+  return (
+    <p
+      className={cn(
+        'mt-1 text-xs text-destructive',
+        isRtl ? 'text-right' : 'text-left',
+      )}
+    >
+      {message}
+    </p>
+  );
 }
 
-function RequiredMark() {
-  return <span className="mr-1 text-destructive">*</span>;
+function RequiredMark({ isRtl }: { isRtl: boolean }) {
+  return (
+    <span className={cn('text-destructive', isRtl ? 'mr-1' : 'ml-1')}>
+      *
+    </span>
+  );
 }
 
 type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   error?: string;
   required?: boolean;
+  isRtl: boolean;
 };
 
 function TextInput({
@@ -64,27 +81,36 @@ function TextInput({
   error,
   required,
   className,
+  isRtl,
   ...props
 }: TextInputProps) {
   return (
     <div className="w-full">
-      <label className="mb-2 block text-right text-sm font-medium text-foreground">
+      <label
+        className={cn(
+          'mb-2 block text-sm font-medium text-foreground',
+          isRtl ? 'text-right' : 'text-left',
+        )}
+      >
         {label}
-        {required && <RequiredMark />}
+        {required && <RequiredMark isRtl={isRtl} />}
       </label>
 
       <input
+        dir={isRtl ? 'rtl' : 'ltr'}
         className={cn(
-          'h-10 w-full rounded-md border border-input bg-background px-3 text-right text-sm outline-none transition-colors',
+          'h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none transition-colors',
           'placeholder:text-muted-foreground',
           'focus:border-primary focus:ring-1 focus:ring-primary',
-          error && 'border-destructive focus:border-destructive focus:ring-destructive',
+          isRtl ? 'text-right' : 'text-left',
+          error &&
+            'border-destructive focus:border-destructive focus:ring-destructive',
           className,
         )}
         {...props}
       />
 
-      <FieldError message={error} />
+      <FieldError message={error} isRtl={isRtl} />
     </div>
   );
 }
@@ -97,6 +123,8 @@ type SelectFieldProps = {
   onChange: (value: string) => void;
   error?: string;
   required?: boolean;
+  isRtl: boolean;
+  disabled?: boolean;
 };
 
 function SelectField({
@@ -107,24 +135,35 @@ function SelectField({
   onChange,
   error,
   required,
+  isRtl,
+  disabled = false,
 }: SelectFieldProps) {
   return (
     <div className="w-full">
-      <label className="mb-2 block text-right text-sm font-medium text-foreground">
+      <label
+        className={cn(
+          'mb-2 block text-sm font-medium text-foreground',
+          isRtl ? 'text-right' : 'text-left',
+        )}
+      >
         {label}
-        {required && <RequiredMark />}
+        {required && <RequiredMark isRtl={isRtl} />}
       </label>
 
       <div className="relative">
         <select
-          dir="rtl"
+          dir={isRtl ? 'rtl' : 'ltr'}
           value={value}
+          disabled={disabled}
           onChange={event => onChange(event.target.value)}
           className={cn(
-            'h-10 w-full appearance-none rounded-md border border-input bg-background px-3 pl-9 text-right text-sm outline-none transition-colors',
+            'h-10 w-full appearance-none rounded-md border border-input bg-background px-3 text-sm outline-none transition-colors',
             'text-foreground focus:border-primary focus:ring-1 focus:ring-primary',
+            isRtl ? 'pl-9 text-right' : 'pr-9 text-left',
             !value && 'text-muted-foreground',
-            error && 'border-destructive focus:border-destructive focus:ring-destructive',
+            disabled && 'cursor-not-allowed opacity-60',
+            error &&
+              'border-destructive focus:border-destructive focus:ring-destructive',
           )}
         >
           <option value="">{placeholder}</option>
@@ -136,10 +175,15 @@ function SelectField({
           ))}
         </select>
 
-        <ChevronDown className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <ChevronDown
+          className={cn(
+            'pointer-events-none absolute top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground',
+            isRtl ? 'left-3' : 'right-3',
+          )}
+        />
       </div>
 
-      <FieldError message={error} />
+      <FieldError message={error} isRtl={isRtl} />
     </div>
   );
 }
@@ -151,6 +195,7 @@ type DatePickerFieldProps = {
   onChange: (date?: Date) => void;
   error?: string;
   required?: boolean;
+  isRtl: boolean;
 };
 
 function DatePickerField({
@@ -160,6 +205,7 @@ function DatePickerField({
   onChange,
   error,
   required,
+  isRtl,
 }: DatePickerFieldProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -183,34 +229,46 @@ function DatePickerField({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <label className="mb-2 block text-right text-sm font-medium text-foreground">
+      <label
+        className={cn(
+          'mb-2 block text-sm font-medium text-foreground',
+          isRtl ? 'text-right' : 'text-left',
+        )}
+      >
         {label}
-        {required && <RequiredMark />}
+        {required && <RequiredMark isRtl={isRtl} />}
       </label>
 
       <button
         type="button"
+        dir={isRtl ? 'rtl' : 'ltr'}
         onClick={() => setIsOpen(prev => !prev)}
         className={cn(
           'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 text-sm outline-none transition-colors',
           'focus:border-primary focus:ring-1 focus:ring-primary',
-          error && 'border-destructive focus:border-destructive focus:ring-destructive',
+          error &&
+            'border-destructive focus:border-destructive focus:ring-destructive',
         )}
       >
         <CalendarIcon className="h-4 w-4 text-muted-foreground" />
 
         <span
           className={cn(
-            'text-right',
             value ? 'text-foreground' : 'text-muted-foreground',
+            isRtl ? 'text-right' : 'text-left',
           )}
         >
-          {value ? formatPersianDate(value) : placeholder}
+          {value ? formatDate(value, isRtl) : placeholder}
         </span>
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-[calc(100%+8px)] z-[70] rounded-lg border bg-background shadow-lg">
+        <div
+          className={cn(
+            'absolute top-[calc(100%+8px)] z-[70] rounded-lg border bg-background shadow-lg',
+            isRtl ? 'right-0' : 'left-0',
+          )}
+        >
           <Calendar
             mode="single"
             selected={value}
@@ -222,7 +280,7 @@ function DatePickerField({
         </div>
       )}
 
-      <FieldError message={error} />
+      <FieldError message={error} isRtl={isRtl} />
     </div>
   );
 }
@@ -233,10 +291,70 @@ export function CreateFormModal({
   onSubmit,
   isLoading = false,
 }: CreateFormModalProps) {
+  const { t, i18n } = useTranslation();
+
+  const isRtl = i18n.language === 'fa';
+
   const [values, setValues] = React.useState<CreateFormValues>(
     createFormInitialValues,
   );
   const [errors, setErrors] = React.useState<FormErrors>({});
+
+  const [responderOptions, setResponderOptions] = React.useState<
+    SelectOption[]
+  >([]);
+  const [registrarOptions, setRegistrarOptions] = React.useState<
+    SelectOption[]
+  >([]);
+  const [centerOptions, setCenterOptions] = React.useState<SelectOption[]>([]);
+  const [organizationOptions, setOrganizationOptions] = React.useState<
+    SelectOption[]
+  >([]);
+  const [structureOptions, setStructureOptions] = React.useState<
+    SelectOption[]
+  >([]);
+
+  const [optionsLoading, setOptionsLoading] = React.useState(false);
+  const [optionsError, setOptionsError] = React.useState('');
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    async function fetchCreateFormOptions() {
+      try {
+        setOptionsLoading(true);
+        setOptionsError('');
+
+        const options = await getCreateFormOptions(i18n.language);
+
+        if (!isMounted) return;
+
+        setResponderOptions(options.responderOptions);
+        setRegistrarOptions(options.registrarOptions);
+        setCenterOptions(options.centerOptions);
+        setOrganizationOptions(options.organizationOptions);
+        setStructureOptions(options.structureOptions);
+      } catch {
+        if (!isMounted) return;
+
+        setOptionsError(
+          t('createForm.optionsFetchError', 'خطا در دریافت اطلاعات فرم'),
+        );
+      } finally {
+        if (isMounted) {
+          setOptionsLoading(false);
+        }
+      }
+    }
+
+    if (open) {
+      fetchCreateFormOptions();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [open, i18n.language, t]);
 
   const updateValue = <Key extends keyof CreateFormValues>(
     key: Key,
@@ -256,6 +374,7 @@ export function CreateFormModal({
   const resetForm = () => {
     setValues(createFormInitialValues);
     setErrors({});
+    setOptionsError('');
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -269,7 +388,7 @@ export function CreateFormModal({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const validationErrors = validateCreateForm(values);
+    const validationErrors = validateCreateForm(values, t);
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -281,10 +400,14 @@ export function CreateFormModal({
     handleOpenChange(false);
   };
 
+  const selectPlaceholder = optionsLoading
+    ? t('common.loading', 'در حال بارگذاری...')
+    : t('common.select', 'انتخاب کنید');
+
   return (
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogContent
-        dir="rtl"
+        dir={isRtl ? 'rtl' : 'ltr'}
         className={cn(
           'max-h-[92vh] w-[calc(100%-32px)] max-w-[560px] overflow-y-auto rounded-2xl border-none bg-background p-0 shadow-2xl',
           'sm:rounded-2xl',
@@ -293,28 +416,36 @@ export function CreateFormModal({
         <div className="relative px-6 pb-6 pt-7 sm:px-8">
           <AlertDialogCancel
             className={cn(
-              'absolute left-5 top-5 mt-0 h-8 w-8 rounded-full border-0 bg-transparent p-0 shadow-none',
+              'absolute top-5 mt-0 h-8 w-8 rounded-full border-0 bg-transparent p-0 shadow-none',
               'text-muted-foreground hover:bg-secondary hover:text-foreground',
+              isRtl ? 'left-5' : 'right-5',
             )}
           >
             <X className="h-4 w-4" />
-            <span className="sr-only">بستن</span>
+            <span className="sr-only">{t('common.close', 'بستن')}</span>
           </AlertDialogCancel>
 
           <div className="mb-6 text-center">
             <AlertDialogTitle className="text-xl font-bold text-foreground">
-              ایجاد پرسشنامه جدید
+              {t('createForm.title', 'ایجاد پرسشنامه جدید')}
             </AlertDialogTitle>
 
             <AlertDialogDescription className="sr-only">
-              فرم ایجاد پرسشنامه جدید شامل عنوان، پاسخ‌دهنده، ثبت‌کننده،
-              تاریخ‌ها، مرکز، سازمان و ساختار
+              {t(
+                'createForm.description',
+                'فرم ایجاد پرسشنامه جدید شامل عنوان، پاسخ‌دهنده، ثبت‌کننده، تاریخ‌ها، مرکز، سازمان و ساختار',
+              )}
             </AlertDialogDescription>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <label className="flex cursor-pointer items-center justify-end gap-2 text-sm text-foreground">
-              <span>اجباری</span>
+            <label
+              className={cn(
+                'flex cursor-pointer items-center gap-2 text-sm text-foreground',
+                isRtl ? 'justify-end' : 'justify-start',
+              )}
+            >
+              <span>{t('formBuilder.required', 'اجباری')}</span>
 
               <input
                 type="checkbox"
@@ -326,10 +457,25 @@ export function CreateFormModal({
               />
             </label>
 
+            {optionsError && (
+              <p
+                className={cn(
+                  'rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive',
+                  isRtl ? 'text-right' : 'text-left',
+                )}
+              >
+                {optionsError}
+              </p>
+            )}
+
             <TextInput
               required
-              label="عنوان پرسشنامه"
-              placeholder="عنوان پرسشنامه را وارد کنید"
+              isRtl={isRtl}
+              label={t('createForm.questionnaireTitle', 'عنوان پرسشنامه')}
+              placeholder={t(
+                'createForm.enterQuestionnaireTitle',
+                'عنوان پرسشنامه را وارد کنید',
+              )}
               value={values.title}
               error={errors.title}
               onChange={event => updateValue('title', event.target.value)}
@@ -338,8 +484,10 @@ export function CreateFormModal({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <SelectField
                 required
-                label="پاسخ‌دهنده"
-                placeholder="انتخاب کنید"
+                isRtl={isRtl}
+                disabled={optionsLoading}
+                label={t('createForm.responder', 'پاسخ‌دهنده')}
+                placeholder={selectPlaceholder}
                 value={values.responder}
                 options={responderOptions}
                 error={errors.responder}
@@ -348,8 +496,10 @@ export function CreateFormModal({
 
               <SelectField
                 required
-                label="ثبت‌کننده"
-                placeholder="انتخاب کنید"
+                isRtl={isRtl}
+                disabled={optionsLoading}
+                label={t('createForm.registrar', 'ثبت‌کننده')}
+                placeholder={selectPlaceholder}
                 value={values.registrar}
                 options={registrarOptions}
                 error={errors.registrar}
@@ -360,8 +510,9 @@ export function CreateFormModal({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <DatePickerField
                 required
-                label="تاریخ شروع"
-                placeholder="انتخاب تاریخ"
+                isRtl={isRtl}
+                label={t('createForm.startDate', 'تاریخ شروع')}
+                placeholder={t('createForm.selectDate', 'انتخاب تاریخ')}
                 value={values.startDate}
                 error={errors.startDate}
                 onChange={date => updateValue('startDate', date)}
@@ -369,8 +520,9 @@ export function CreateFormModal({
 
               <DatePickerField
                 required
-                label="تاریخ پایان"
-                placeholder="انتخاب تاریخ"
+                isRtl={isRtl}
+                label={t('createForm.endDate', 'تاریخ پایان')}
+                placeholder={t('createForm.selectDate', 'انتخاب تاریخ')}
                 value={values.endDate}
                 error={errors.endDate}
                 onChange={date => updateValue('endDate', date)}
@@ -379,8 +531,14 @@ export function CreateFormModal({
 
             <SelectField
               required
-              label="مرکز"
-              placeholder="انتخاب مرکز"
+              isRtl={isRtl}
+              disabled={optionsLoading}
+              label={t('createForm.center', 'مرکز')}
+              placeholder={
+                optionsLoading
+                  ? t('common.loading', 'در حال بارگذاری...')
+                  : t('createForm.selectCenter', 'انتخاب مرکز')
+              }
               value={values.center}
               options={centerOptions}
               error={errors.center}
@@ -389,8 +547,14 @@ export function CreateFormModal({
 
             <SelectField
               required
-              label="سازمان"
-              placeholder="انتخاب سازمان"
+              isRtl={isRtl}
+              disabled={optionsLoading}
+              label={t('createForm.organization', 'سازمان')}
+              placeholder={
+                optionsLoading
+                  ? t('common.loading', 'در حال بارگذاری...')
+                  : t('createForm.selectOrganization', 'انتخاب سازمان')
+              }
               value={values.organization}
               options={organizationOptions}
               error={errors.organization}
@@ -399,21 +563,33 @@ export function CreateFormModal({
 
             <SelectField
               required
-              label="ساختار"
-              placeholder="انتخاب ساختار"
+              isRtl={isRtl}
+              disabled={optionsLoading}
+              label={t('createForm.structure', 'ساختار')}
+              placeholder={
+                optionsLoading
+                  ? t('common.loading', 'در حال بارگذاری...')
+                  : t('createForm.selectStructure', 'انتخاب ساختار')
+              }
               value={values.structure}
               options={structureOptions}
               error={errors.structure}
               onChange={value => updateValue('structure', value)}
             />
 
-            <div className="flex items-center justify-start gap-3 pt-3">
+            <div
+              className={cn(
+                'flex items-center gap-3 pt-3',
+                isRtl ? 'justify-start' : 'justify-end',
+              )}
+            >
               <Button
                 type="submit"
                 isLoading={isLoading}
+                disabled={optionsLoading}
                 className="h-10 min-w-[132px] rounded-lg bg-blue-600 px-5 hover:bg-blue-700"
               >
-                ایجاد پرسشنامه
+                {t('createForm.createQuestionnaire', 'ایجاد پرسشنامه')}
               </Button>
 
               <AlertDialogCancel
@@ -422,7 +598,7 @@ export function CreateFormModal({
                   'hover:bg-secondary hover:text-foreground',
                 )}
               >
-                انصراف
+                {t('common.cancel', 'انصراف')}
               </AlertDialogCancel>
             </div>
           </form>

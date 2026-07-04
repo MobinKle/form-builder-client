@@ -27,75 +27,73 @@ export const createFormInitialValues: CreateFormValues = {
   structure: '',
 };
 
-export const responderOptions: SelectOption[] = [
-  { label: 'مشتری', value: 'customer' },
-  { label: 'کارمند', value: 'employee' },
-  { label: 'شرکت‌کننده', value: 'participant' },
-  { label: 'مدیر پروژه', value: 'project-manager' },
-];
-
-export const registrarOptions: SelectOption[] = [
-  { label: 'واحد منابع انسانی', value: 'hr' },
-  { label: 'واحد پشتیبانی', value: 'support' },
-  { label: 'واحد آموزش', value: 'education' },
-  { label: 'واحد فنی', value: 'technical' },
-];
-
-export const centerOptions: SelectOption[] = [
-  { label: 'مرکز تهران', value: 'tehran' },
-  { label: 'مرکز اصفهان', value: 'isfahan' },
-  { label: 'مرکز شیراز', value: 'shiraz' },
-];
-
-export const organizationOptions: SelectOption[] = [
-  { label: 'سازمان مرکزی', value: 'main-organization' },
-  { label: 'سازمان فروش', value: 'sales-organization' },
-  { label: 'سازمان خدمات', value: 'service-organization' },
-];
-
-export const structureOptions: SelectOption[] = [
-  { label: 'ساختار منابع انسانی', value: 'hr-structure' },
-  { label: 'ساختار پشتیبانی', value: 'support-structure' },
-  { label: 'ساختار فنی', value: 'technical-structure' },
-];
-
-export const validateCreateForm = (values: CreateFormValues) => {
+export const validateCreateForm = (
+  values: CreateFormValues,
+  t: (key: string, defaultValue: string) => string,
+) => {
   const errors: Partial<Record<keyof CreateFormValues, string>> = {};
 
   if (!values.title.trim()) {
-    errors.title = 'عنوان پرسشنامه الزامی است';
+    errors.title = t(
+      'createForm.validation.titleRequired',
+      'عنوان پرسشنامه الزامی است',
+    );
   }
 
   if (!values.responder) {
-    errors.responder = 'پاسخ‌دهنده را انتخاب کنید';
+    errors.responder = t(
+      'createForm.validation.responderRequired',
+      'پاسخ‌دهنده را انتخاب کنید',
+    );
   }
 
   if (!values.registrar) {
-    errors.registrar = 'ثبت‌کننده را انتخاب کنید';
+    errors.registrar = t(
+      'createForm.validation.registrarRequired',
+      'ثبت‌کننده را انتخاب کنید',
+    );
   }
 
   if (!values.startDate) {
-    errors.startDate = 'تاریخ شروع را انتخاب کنید';
+    errors.startDate = t(
+      'createForm.validation.startDateRequired',
+      'تاریخ شروع را انتخاب کنید',
+    );
   }
 
   if (!values.endDate) {
-    errors.endDate = 'تاریخ پایان را انتخاب کنید';
+    errors.endDate = t(
+      'createForm.validation.endDateRequired',
+      'تاریخ پایان را انتخاب کنید',
+    );
   }
 
   if (values.startDate && values.endDate && values.startDate > values.endDate) {
-    errors.endDate = 'تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد';
+    errors.endDate = t(
+      'createForm.validation.endDateBeforeStartDate',
+      'تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد',
+    );
   }
 
   if (!values.center) {
-    errors.center = 'مرکز را انتخاب کنید';
+    errors.center = t(
+      'createForm.validation.centerRequired',
+      'مرکز را انتخاب کنید',
+    );
   }
 
   if (!values.organization) {
-    errors.organization = 'سازمان را انتخاب کنید';
+    errors.organization = t(
+      'createForm.validation.organizationRequired',
+      'سازمان را انتخاب کنید',
+    );
   }
 
   if (!values.structure) {
-    errors.structure = 'ساختار را انتخاب کنید';
+    errors.structure = t(
+      'createForm.validation.structureRequired',
+      'ساختار را انتخاب کنید',
+    );
   }
 
   return errors;
