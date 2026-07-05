@@ -123,6 +123,8 @@ const noFieldTypes = ['heading', 'description'];
 
 const onlyNumbers = (value: string) => value.replace(/\D/g, '');
 
+const autoDirectionClassName = 'text-start [unicode-bidi:plaintext]';
+
 interface Props {
   formElement: FormElementsType;
   isView?: boolean;
@@ -187,32 +189,35 @@ export default function FormElementCard({
         }`}
       >
         <div className="flex items-center gap-8">
-          <div className="flex w-full items-center gap-5">
-            {type === 'switch' ? (
-              <Switch
-                checked={field?.value}
-                onCheckedChange={field?.onChange}
-              />
-            ) : type === 'checkbox' ? (
-              <Checkbox
-                checked={field?.value}
-                onCheckedChange={field?.onChange}
-              />
-            ) : null}
+<div className="flex w-full items-center gap-5">
+  {type === 'switch' ? (
+    <Switch
+      checked={field?.value}
+      onCheckedChange={field?.onChange}
+    />
+  ) : type === 'checkbox' ? (
+    <Checkbox
+      checked={field?.value}
+      onCheckedChange={field?.onChange}
+    />
+  ) : null}
 
-            <BubbleMenuEditor
-              placeholder={
-                ['heading', 'description'].includes(type)
-                  ? label
-                  : 'Question or Text'
-              }
-              content={label}
-              updateHandler={html => {
-                updateLabel(id, html);
-              }}
-              readOnly={isView}
-            />
-          </div>
+<div dir="auto" className="w-full text-start [unicode-bidi:plaintext]">
+  <BubbleMenuEditor
+placeholder={
+['heading', 'description'].includes(type)
+? label
+: t('formBuilder.questionOrText', 'سوال یا متن')
+}
+content={label}
+updateHandler={html => {
+updateLabel(id, html);
+}}
+readOnly={isView}
+  />
+</div>
+</div>
+
 
           {isView ? null : (
             <div className="flex items-center">
@@ -253,8 +258,10 @@ export default function FormElementCard({
 
         {type === 'single-line' ? (
           <Input
-            placeholder="Single line text"
-            required={!!field && required}
+  dir="auto"
+  className={autoDirectionClassName}
+  placeholder="Single line text"
+  required={!!field && required}
             {...(field
               ? {
                   value: field.value ?? '',
@@ -300,8 +307,10 @@ export default function FormElementCard({
           />
         ) : type === 'multi-line' ? (
           <Textarea
-            placeholder="Multi line text..."
-            required={!!field && required}
+  dir="auto"
+  className={autoDirectionClassName}
+  placeholder="Multi line text..."
+  required={!!field && required}
             {...(field
               ? {
                   value: field.value ?? '',
@@ -313,8 +322,10 @@ export default function FormElementCard({
           />
         ) : type === 'free-text' ? (
           <Textarea
-            placeholder={t('formBuilder.freeTextPlaceholder', 'متن آزاد...')}
-            required={!!field && required}
+  dir="auto"
+  className={autoDirectionClassName}
+  placeholder={t('formBuilder.freeTextPlaceholder', 'متن آزاد...')}
+  required={!!field && required}
             {...(field
               ? {
                   value: field.value ?? '',
@@ -461,8 +472,9 @@ export default function FormElementCard({
         ) : type === 'mobile' ? (
           <Input
             type="tel"
-            dir={isRtl ? 'rtl' : 'ltr'}
+            dir="ltr"
             inputMode="numeric"
+            className="text-left [unicode-bidi:plaintext]"
             maxLength={11}
             placeholder="09xxxxxxxxx"
             required={!!field && required}
@@ -481,8 +493,9 @@ export default function FormElementCard({
         ) : ['phone', 'phone-number'].includes(type) ? (
           <Input
             type="tel"
-            dir={isRtl ? 'rtl' : 'ltr'}
+            dir="ltr"
             inputMode="numeric"
+            className="text-left [unicode-bidi:plaintext]"
             maxLength={11}
             placeholder="021xxxxxxxx"
             required={!!field && required}
@@ -504,6 +517,7 @@ export default function FormElementCard({
             inputMode="numeric"
             maxLength={10}
             dir='ltr'
+            className="text-left [unicode-bidi:plaintext]"
             placeholder={t('formBuilder.nationalCode', 'کد ملی')}
             required={!!field && required}
             {...(field
@@ -563,29 +577,32 @@ export default function FormElementCard({
             </div>
           </div>
         ) : type === 'card-number' ? (
-          <Input
-            type="tel"
-            inputMode="numeric"
-            dir='ltr'
-            maxLength={16}
-            placeholder={t('formBuilder.cardNumber', 'شماره کارت')}
-            required={!!field && required}
-            {...(field
-              ? {
-                  value: field.value ?? '',
-                  onChange: (e: ChangeEvent<HTMLInputElement>) => {
-                    const value = onlyNumbers(e.target.value).slice(0, 16);
-                    field.onChange(value);
-                  },
-                }
-              : {
-                  defaultValue: '',
-                })}
-          />
+<Input
+  type="tel"
+  inputMode="numeric"
+  dir="ltr"
+  className="text-left [unicode-bidi:plaintext]"
+  maxLength={16}
+  placeholder={t('formBuilder.cardNumber', 'شماره کارت')}
+  required={!!field && required}
+  {...(field
+    ? {
+        value: field.value ?? '',
+        onChange: (e: ChangeEvent<HTMLInputElement>) => {
+          const value = onlyNumbers(e.target.value).slice(0, 16);
+          field.onChange(value);
+        },
+      }
+    : {
+        defaultValue: '',
+      })}
+/>
+
         ) : type === 'iban' ? (
           <Input
             type="text"
             dir='ltr'
+            className="text-left [unicode-bidi:plaintext]"
             maxLength={26}
             placeholder="IRxxxxxxxxxxxxxxxxxxxxxxxx"
             required={!!field && required}
