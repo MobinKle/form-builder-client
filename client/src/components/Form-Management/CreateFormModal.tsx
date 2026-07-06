@@ -196,6 +196,7 @@ type DatePickerFieldProps = {
   error?: string;
   required?: boolean;
   isRtl: boolean;
+  popoverAlign?: 'start' | 'end';
 };
 
 function DatePickerField({
@@ -206,6 +207,7 @@ function DatePickerField({
   error,
   required,
   isRtl,
+ popoverAlign = 'start',
 }: DatePickerFieldProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -264,17 +266,25 @@ function DatePickerField({
 
       {isOpen && (
         <div
-          className={cn(
-            'absolute top-[calc(100%+8px)] z-[70] rounded-lg border bg-background shadow-lg',
-            isRtl ? 'right-0' : 'left-0',
-          )}
-        >
+  className={cn(
+    'absolute top-[calc(100%+8px)] z-[70] rounded-lg border bg-background shadow-lg',
+    popoverAlign === 'end'
+      ? isRtl
+        ? 'left-0'
+        : 'right-0'
+      : isRtl
+        ? 'right-0'
+        : 'left-0',
+  )}
+>
+
           <Calendar
-            mode="single"
-            selected={value}
-            onSelect={date => {
-              onChange(date);
-              setIsOpen(false);
+  isRtl={isRtl}
+  mode="single"
+  selected={value}
+  onSelect={date => {
+    onChange(date);
+    setIsOpen(false);
             }}
           />
         </div>
@@ -521,14 +531,16 @@ React.useEffect(() => {
               />
 
               <DatePickerField
-                required
-                isRtl={isRtl}
-                label={t('createForm.endDate', 'تاریخ پایان')}
-                placeholder={t('createForm.selectDate', 'انتخاب تاریخ')}
-                value={values.endDate}
-                error={errors.endDate}
-                onChange={date => updateValue('endDate', date)}
-              />
+  required
+  isRtl={isRtl}
+  popoverAlign="end"
+  label={t('createForm.endDate', 'تاریخ پایان')}
+  placeholder={t('createForm.selectDate', 'انتخاب تاریخ')}
+  value={values.endDate}
+  error={errors.endDate}
+  onChange={date => updateValue('endDate', date)}
+/>
+
             </div>
 
             <SelectField
