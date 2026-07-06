@@ -1,8 +1,22 @@
-// بخش مربوطه: کل گرید کارت‌ها با هم (خود کانتینر گرید، نه محتوای هر کارت).
-// مسئولیت:
 
-// لیست پرسشنامه‌ها رو می‌گیره، فیلتر شده بر اساس وضعیت (که از FormManagement.tsx بهش پاس داده شده)
-// map می‌زنه و برای هرکدوم یه <FormCard /> رندر می‌کنه
-// اولین آیتم گرید رو <CreateFormCard /> می‌ذاره
-// مسئول لودینگ/اسکلتون و حالت خالی (empty state) هم همینه — مثلاً وقتی فیلتر «غیرفعال» باشه ولی هیچ آیتمی نباشه
-// برای آرا
+import FormCard, { FormItem } from "./FormCard";
+
+type Props = {
+  forms: FormItem[];
+};
+
+export default function FormList({ forms }: Props) {
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {forms.map((form) => (
+        <FormCard
+          key={form.id}
+          form={form}
+          onView={(f) => console.log("view", f)}
+          onEdit={(f) => console.log("edit", f)}
+          onDelete={(f) => console.log("delete", f)}
+        />
+      ))}
+    </div>
+  );
+}
