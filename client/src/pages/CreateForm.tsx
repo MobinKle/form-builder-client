@@ -36,7 +36,7 @@ import FormPreview from '../components/create-form/FormPreview';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-  formType?: 'add' | 'edit';
+  formType?: 'add' | 'edit' | 'view';
   form?: FormType;
 }
 
@@ -47,8 +47,9 @@ export default function CreateForm({ formType = 'add', form }: Props) {
   const navigate = useNavigate();
   const isDemo = pathname === '/demo';
   const queryClient = useQueryClient();
+  const isViewMode = formType === 'view';
+  const [isPreview, setIsPreview] = useState(isViewMode);
 
-  const [isPreview, setIsPreview] = useState(false);
 
   const [formName, setFormName] = useState(form?.name ?? '');
   const [activeButton, setActiveButton] =
@@ -66,6 +67,12 @@ export default function CreateForm({ formType = 'add', form }: Props) {
       if (formType === 'edit') removeAllFormElements();
     };
   }, [removeAllFormElements, formType]);
+
+useEffect(() => {
+  if (isViewMode) {
+    setIsPreview(true);
+  }
+}, [isViewMode]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -133,7 +140,9 @@ toast.success(
           className="flex flex-grow flex-col"
 onSubmit={e => {
   e.preventDefault();
-
+  if (isViewMode) {
+    return;
+  }
   if (formElements.length === 0) {
 toast.error(t('formBuilder.emptyForm'));
     return;
@@ -178,11 +187,15 @@ toast.error(t('formBuilder.emptyForm'));
       <HammerIcon className="h-5 w-5" />
       <span>{t('formBuilder.builder')}</span>
     </div>
-    <Switch
-      className="data-[state=unchecked]:bg-primary"
-      checked={isPreview}
-      onCheckedChange={setIsPreview}
-    />
+  <Switch
+  className="data-[state=unchecked]:bg-primary"
+  checked={isPreview}
+  disabled={isViewMode}
+  onCheckedChange={value => {
+    if (isViewMode) return;
+    setIsPreview(value);
+  }}
+  />
     <div className={`flex items-center gap-2 transition-colors ${isPreview ? 'text-primary' : ''}`}>
       <EyeIcon className="h-5 w-5" />
       <span>{t('formBuilder.preview')}</span>
@@ -232,11 +245,11 @@ toast.error(t('formBuilder.emptyForm'));
   ) : null}
 
   <Button
-    disabled={isDemo}
+    disabled={isDemo || isViewMode}
     isLoading={isPending}
     className={isDemo ? 'gap-2.5' : ''}
   >
-    {isDemo && <LockIcon className="h-[18px] w-[18px]" />}
+    {(isDemo || isViewMode ) &&  <LockIcon className="h-[18px] w-[18px]" />}
     <span>
       {form ? t('formBuilder.updateForm') : t('formBuilder.saveForm')}
     </span>
