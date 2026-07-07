@@ -1,8 +1,26 @@
-// بخش مربوطه: کل گرید کارت‌ها با هم (خود کانتینر گرید، نه محتوای هر کارت).
-// مسئولیت:
+import FormCard, { FormItem } from "./FormCard";
+import { useNavigate } from 'react-router-dom';
 
-// لیست پرسشنامه‌ها رو می‌گیره، فیلتر شده بر اساس وضعیت (که از FormManagement.tsx بهش پاس داده شده)
-// map می‌زنه و برای هرکدوم یه <FormCard /> رندر می‌کنه
-// اولین آیتم گرید رو <CreateFormCard /> می‌ذاره
-// مسئول لودینگ/اسکلتون و حالت خالی (empty state) هم همینه — مثلاً وقتی فیلتر «غیرفعال» باشه ولی هیچ آیتمی نباشه
-// برای آرا
+type Props = {
+  forms: FormItem[];
+};
+
+export default function FormList({ forms }: Props) {
+  const navigate = useNavigate();
+
+  const sortedForms = [...forms].sort((a, b) => b.status - a.status);
+
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {sortedForms.map((form) => (
+        <FormCard
+          key={form.id}
+          form={form}
+          onEdit={(form) => navigate(`/my-forms/${form.id}/edit`)}
+          onView={(form) => navigate(`/my-forms/${form.id}/view`)}
+          onDelete={(f) => console.log("delete", f)}
+        />
+      ))}
+    </div>
+  );
+}

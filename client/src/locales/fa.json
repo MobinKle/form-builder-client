@@ -7,7 +7,8 @@
     "yes": "بله",
     "delete": "حذف",
     "loading": "در حال بارگذاری...",
-    "select": "انتخاب کنید"
+    "select": "انتخاب کنید",
+    "view": "نمایش"
   },
   "formBuilder": {
     "title": "عنوان پرسشنامه",
@@ -27,12 +28,12 @@
     "createError": "خطا در ساخت فرم",
     "updateError": "خطا در بروزرسانی فرم",
     "option": "گزینه",
-    "cardNumber" : "شماره کارت",
-    "nationalCode" : "کد ملی",
-    "selectOptionPlaceholder" : "گزینه ای را انتخاب نمایید.",
-    "freeTextPlaceholder" : "متن آزاد",
-    "numericCode" : "کد عددی",
-    "required" : "اجباری",
+    "cardNumber": "شماره کارت",
+    "nationalCode": "کد ملی",
+    "selectOptionPlaceholder": "گزینه ای را انتخاب نمایید.",
+    "freeTextPlaceholder": "متن آزاد",
+    "numericCode": "کد عددی",
+    "required": "اجباری",
     "dropHere": "در اینجا رها کنید...",
     "emptyPlayground": "المنت انتخابی را از سمت راست بگیرید و در اینجا رها نمایید.",
     "dragAndDropHere": "عناصر مورد نظر بکشید و در پرسشنامه رها کنید",
@@ -101,6 +102,25 @@
       "organizationRequired": "سازمان را انتخاب کنید",
       "structureRequired": "ساختار را انتخاب کنید"
     }
+  },
+  "formManagement": {
+    "createNewForm": "ایجاد پرسشنامه جدید",
+    "createNewFormDescription": "برای شروع، یک پرسشنامه جدید ایجاد کنید",
+    "respondent": "پاسخ دهنده:",
+    "creator": "ثبت کننده:",
+    "startDate": "تاریخ شروع:",
+    "endDate": "تاریخ پایان:",
+    "deactivate": "غیرفعال‌سازی",
+    "activate": "فعال‌سازی",
+    "statusFilter": "فیلتر وضعیت:",
+    "status": {
+      "active": "فعال",
+      "inactive": "غیرفعال",
+      "both": "هر دو"
+    },
+    "header": {
+      "title": "پرسشنامه‌های فعال",
+      "description": "مدیریت و مشاهده پرسشنامه‌های طراحی شده"
+    }
   }
 }
-

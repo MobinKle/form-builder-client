@@ -13,7 +13,6 @@ import PersistLogin from './components/auth/PersistLogin';
 import Error from './pages/Error';
 import Settings from './pages/Settings';
 import MyForms from './pages/MyForms';
-import UpdateForm from './pages/UpdateForm';
 import GeneratedForm from './pages/GeneratedForm';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -71,7 +70,7 @@ const router = createBrowserRouter([
               },
               {
                 path: '/my-forms/:id/edit',
-                element: <UpdateForm />,
+                element: <CreateForm />,
               },
               {
                 path: '/settings',
@@ -81,6 +80,10 @@ const router = createBrowserRouter([
                 path: '/form-management',
                 element: <FormManagement />,
               },
+              {
+             path: '/my-forms/:id/view',
+           element: <CreateForm formType="view" />,
+            },
             ],
           },
         ],
