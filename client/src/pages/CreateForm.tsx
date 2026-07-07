@@ -226,11 +226,11 @@ toast.error(t('formBuilder.emptyForm'));
     </Button>
   ) : null}
   <Button
-    disabled={isDemo}
+    disabled={isDemo || isViewMode}
     isLoading={isPending}
-    className={isDemo ? 'gap-2.5' : ''}
+    className={isDemo  ? 'gap-2.5' : ''}
   >
-    {isDemo && <LockIcon className="h-[18px] w-[18px]" />}
+    {(isDemo || isViewMode) && <LockIcon className="h-[18px] w-[18px]" />}
     <span>
       {form ? t('formBuilder.updateForm') : t('formBuilder.saveForm')}
     </span>
@@ -266,16 +266,6 @@ toast.error(t('formBuilder.emptyForm'));
     </AlertDialog>
   ) : null}
 
-  <Button
-    disabled={isDemo || isViewMode}
-    isLoading={isPending}
-    className={isDemo ? 'gap-2.5' : ''}
-  >
-    {(isDemo || isViewMode ) &&  <LockIcon className="h-[18px] w-[18px]" />}
-    <span>
-      {form ? t('formBuilder.updateForm') : t('formBuilder.saveForm')}
-    </span>
-  </Button>
 </section>
 
 
