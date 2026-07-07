@@ -1,4 +1,12 @@
+const formatDate = (date: Date | undefined, isRtl: boolean) => {
+  if (!date) return '';
 
+  return new Intl.DateTimeFormat(isRtl ? 'fa-IR-u-ca-persian' : 'en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+};
 
 export type FormItem = {
   id: string;
@@ -10,7 +18,6 @@ export type FormItem = {
   endDate: string;
 };
 
-
 type Props = {
   form: FormItem;
   onView?: (form: FormItem) => void;
@@ -19,9 +26,13 @@ type Props = {
 };
 
 export default function FormCard({ form, onView, onEdit, onDelete }: Props) {
+  const isRtl = true;
+
+  const startDate = form.startDate ? new Date(form.startDate) : undefined;
+  const endDate = form.endDate ? new Date(form.endDate) : undefined;
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:shadow-md">
-
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-sm font-semibold text-slate-800">
           {form.title}
@@ -30,37 +41,39 @@ export default function FormCard({ form, onView, onEdit, onDelete }: Props) {
         <span
           className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${
             form.status === 1
-              ? "bg-green-100 text-green-700"
-              : "bg-slate-100 text-slate-500"
+              ? 'bg-green-100 text-green-700'
+              : 'bg-slate-100 text-slate-500'
           }`}
         >
-          {form.status === 1 ? "فعال" : "غیرفعال"}
+          {form.status === 1 ? 'فعال' : 'غیرفعال'}
         </span>
       </div>
 
-<div className="mt-4 space-y-2 text-xs text-slate-500">
-  <div className="flex justify-between gap-4">
-    <span className="text-slate-400">پاسخ دهنده:</span>
-    <span className="font-medium text-slate-700">{form.respondent}</span>
-  </div>
+      <div className="mt-4 space-y-2 text-xs text-slate-500">
+        <div className="flex justify-between gap-4">
+          <span className="text-slate-400">پاسخ دهنده:</span>
+          <span className="font-medium text-slate-700">{form.respondent}</span>
+        </div>
 
-  <div className="flex justify-between gap-4">
-    <span className="text-slate-400">ثبت کننده:</span>
-    <span className="font-medium text-slate-700">{form.creator}</span>
-  </div>
+        <div className="flex justify-between gap-4">
+          <span className="text-slate-400">ثبت کننده:</span>
+          <span className="font-medium text-slate-700">{form.creator}</span>
+        </div>
 
-  <div className="flex justify-between gap-4">
-    <span className="text-slate-400">تاریخ شروع:</span>
-    <span className="font-medium text-slate-700">{form.startDate}</span>
-  </div>
+        <div className="flex justify-between gap-4">
+          <span className="text-slate-400">تاریخ شروع:</span>
+          <span className="font-medium text-slate-700">
+            {formatDate(startDate, isRtl)}
+          </span>
+        </div>
 
-  <div className="flex justify-between gap-4">
-    <span className="text-slate-400">تاریخ پایان:</span>
-    <span className="font-medium text-slate-700">{form.endDate}</span>
-  </div>
-</div>
-
-
+        <div className="flex justify-between gap-4">
+          <span className="text-slate-400">تاریخ پایان:</span>
+          <span className="font-medium text-slate-700">
+            {formatDate(endDate, isRtl)}
+          </span>
+        </div>
+      </div>
 
       <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-medium">
         <button
@@ -85,7 +98,7 @@ export default function FormCard({ form, onView, onEdit, onDelete }: Props) {
           <span>نمایش</span>
         </button>
 
-          <button
+        <button
           onClick={() => onEdit?.(form)}
           className="flex items-center gap-1.5 text-blue-600 transition-colors hover:text-blue-700"
         >
@@ -105,7 +118,8 @@ export default function FormCard({ form, onView, onEdit, onDelete }: Props) {
           </svg>
           <span>ویرایش</span>
         </button>
-                <button
+
+        <button
           onClick={() => onDelete?.(form)}
           className="flex items-center gap-1.5 text-red-500 transition-colors hover:text-red-600"
         >
