@@ -7,7 +7,8 @@
     "yes": "Yes",
     "delete": "Delete",
     "select": "Select",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "view": "View"
   },
   "formBuilder": {
     "title": "Form title",
@@ -99,6 +100,26 @@
       "centerRequired": "Please select a center",
       "organizationRequired": "Please select an organization",
       "structureRequired": "Please select a structure"
+    }
+  },
+  "formManagement": {
+    "createNewForm": "Create New Form",
+    "createNewFormDescription": "To get started, create a new form",
+    "respondent": "Respondent:",
+    "creator": "Created by:",
+    "startDate": "Start date:",
+    "endDate": "End date:",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "statusFilter": "Status filter:",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "both": "Both"
+    },
+    "header": {
+      "title": "Active Forms",
+      "description": "Manage and review designed forms"
     }
   }
 }
