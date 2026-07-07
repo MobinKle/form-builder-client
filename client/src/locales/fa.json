@@ -112,6 +112,8 @@
     "endDate": "تاریخ پایان:",
     "deactivate": "غیرفعال‌سازی",
     "activate": "فعال‌سازی",
+    "deactivateConfirm": "آیا از غیرفعال‌سازی این فرم مطمئن هستید؟",
+    "activateConfirm": "آیا از فعال‌سازی این فرم مطمئن هستید؟",
     "statusFilter": "فیلتر وضعیت:",
     "status": {
       "active": "فعال",

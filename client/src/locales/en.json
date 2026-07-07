@@ -112,6 +112,8 @@
     "endDate": "End date:",
     "deactivate": "Deactivate",
     "activate": "Activate",
+    "deactivateConfirm": "Are you sure you want to deactivate this form?",
+    "activateConfirm": "Are you sure you want to activate this form?",
     "statusFilter": "Status filter:",
     "status": {
       "active": "Active",
