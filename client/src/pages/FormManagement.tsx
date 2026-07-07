@@ -90,7 +90,7 @@ export default function FormManagement()
 
         <div className="my-6 h-px w-full bg-slate-200" />
 
-        <div className="mt-6 flex justify-start">
+        <div className="mt-6 flex items-center justify-between gap-4">
           <FormStatusFilter value={status} onChange={setStatus} />
         </div>
 
