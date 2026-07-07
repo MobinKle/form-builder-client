@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 
 type Props = {
   forms: FormItem[];
+  onToggleStatus: (form: FormItem) => void;
 };
 
-export default function FormList({ forms }: Props) {
+export default function FormList({ forms, onToggleStatus }: Props) {
   const navigate = useNavigate();
 
   const sortedForms = [...forms].sort((a, b) => b.status - a.status);
@@ -16,9 +17,9 @@ export default function FormList({ forms }: Props) {
         <FormCard
           key={form.id}
           form={form}
-          onEdit={(form) => navigate(`/my-forms/${form.id}/edit`)}
-          onView={(form) => navigate(`/my-forms/${form.id}/view`)}
-          onDelete={(f) => console.log("delete", f)}
+          onEdit={(f) => navigate(`/my-forms/${f.id}/edit`)}
+          onView={(f) => navigate(`/my-forms/${f.id}/view`)}
+          onToggleStatus={onToggleStatus} 
         />
       ))}
     </div>
