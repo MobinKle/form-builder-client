@@ -1,11 +1,16 @@
 import * as React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { DayPicker } from 'react-day-picker/persian';
+import { DayPicker as GregorianDayPicker } from 'react-day-picker';
+import { DayPicker as PersianDayPicker } from 'react-day-picker/persian';
 
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/Button';
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+type BaseCalendarProps = React.ComponentProps<typeof GregorianDayPicker>;
+
+export type CalendarProps = BaseCalendarProps & {
+  isRtl?: boolean;
+};
 
 const persianCaptionFormatter = new Intl.DateTimeFormat(
   'fa-IR-u-ca-persian',
@@ -15,36 +20,56 @@ const persianCaptionFormatter = new Intl.DateTimeFormat(
   },
 );
 
+const gregorianCaptionFormatter = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+});
+
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
   formatters,
+  isRtl = false,
   ...props
 }: CalendarProps) {
+  const DayPickerComponent = isRtl ? PersianDayPicker : GregorianDayPicker;
+
   return (
-    <DayPicker
+    <DayPickerComponent
       showOutsideDays={showOutsideDays}
-      dir="rtl"
+      dir={isRtl ? 'rtl' : 'ltr'}
       className={cn('p-3', className)}
       formatters={{
-        formatCaption: date => persianCaptionFormatter.format(date),
+        formatCaption: date =>
+          isRtl
+            ? persianCaptionFormatter.format(date)
+            : gregorianCaptionFormatter.format(date),
         ...formatters,
       }}
       classNames={{
-        months:
-          'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-x-reverse sm:space-y-0',
+        months: cn(
+          'flex flex-col sm:flex-row space-y-4 sm:space-y-0',
+          isRtl
+            ? 'sm:space-x-4 sm:space-x-reverse'
+            : 'sm:space-x-4',
+        ),
         month: 'space-y-4',
         month_caption: 'flex justify-center pt-1 relative items-center',
         caption_label: 'text-sm font-medium',
-        nav: 'space-x-1 space-x-reverse flex items-center',
+        nav: cn(
+          'space-x-1 flex items-center',
+          isRtl && 'space-x-reverse',
+        ),
         button_previous: cn(
           buttonVariants({ variant: 'outline' }),
-          'absolute right-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+          'absolute h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+          isRtl ? 'right-1' : 'left-1',
         ),
         button_next: cn(
           buttonVariants({ variant: 'outline' }),
-          'absolute left-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+          'absolute h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+          isRtl ? 'left-1' : 'right-1',
         ),
         month_grid: 'w-full border-collapse space-y-1',
         weekdays: 'flex',
@@ -67,11 +92,19 @@ function Calendar({
       components={{
         Chevron: ({ orientation, className }) => {
           if (orientation === 'left') {
-            return <ChevronRight className={cn('h-4 w-4', className)} />;
+            return isRtl ? (
+              <ChevronRight className={cn('h-4 w-4', className)} />
+            ) : (
+              <ChevronLeft className={cn('h-4 w-4', className)} />
+            );
           }
 
           if (orientation === 'right') {
-            return <ChevronLeft className={cn('h-4 w-4', className)} />;
+            return isRtl ? (
+              <ChevronLeft className={cn('h-4 w-4', className)} />
+            ) : (
+              <ChevronRight className={cn('h-4 w-4', className)} />
+            );
           }
 
           return <ChevronLeft className={cn('h-4 w-4', className)} />;

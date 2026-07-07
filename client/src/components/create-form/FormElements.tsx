@@ -94,20 +94,15 @@ export default function FormElements({ isUpdate }: Props) {
     if (!normalizedQuery) return elements;
 
     return elements.filter(element => {
-      const translatedTitle = t(`formElements.${element.type}`, {
-        defaultValue: element.title,
-      }).toLowerCase();
-
       const rawTitle = (element.title ?? '').toLowerCase();
       const rawType = (element.type ?? '').toLowerCase();
 
       return (
-        translatedTitle.includes(normalizedQuery) ||
         rawTitle.includes(normalizedQuery) ||
         rawType.includes(normalizedQuery)
       );
     });
-  }, [elements, query, t]);
+  }, [elements, query]);
 
   return (
     <ScrollArea
@@ -116,23 +111,31 @@ export default function FormElements({ isUpdate }: Props) {
       } shrink-0 ${isRtl ? 'pr-[26px]' : 'pl-[26px]'}`}
     >
       <aside className="relative w-80" dir={isRtl ? 'rtl' : 'ltr'}>
-        <section className="sticky top-0 z-10 space-y-5 bg-white pb-5">
-          <div className="space-y-1">
-            <h1 className="text-lg font-semibold">
-              {t('formBuilder.formElements', 'المنت های فرم')}
-            </h1>
-            <h2 className="text-sm text-muted-foreground">
-              {t(
-                'formBuilder.dragAndDropHere',
-                'عناصر مورد نظر را بکشید و در پرسشنامه رها کنید',
-              )}
-            </h2>
-          </div>
+<section
+  dir={isRtl ? 'rtl' : 'ltr'}
+  className="sticky top-0 z-10 space-y-5 bg-white pb-5 text-start"
+>
+  <div className="space-y-1">
+    <h1 className="text-lg font-semibold">
+      {t('formBuilder.formElements', 'المنت های فرم')}
+    </h1>
 
-          <SearchInput
-            placeholder={t('formBuilder.searching', 'جستجو کنید')}
-          />
-        </section>
+    <h2 className="text-sm text-muted-foreground">
+      {t(
+        'formBuilder.dragAndDropHere',
+        'عناصر مورد نظر را بکشید و در پرسشنامه رها کنید',
+      )}
+    </h2>
+  </div>
+
+  <SearchInput
+    dir={isRtl ? 'rtl' : 'ltr'}
+    className="text-start"
+    placeholder={t('formBuilder.searching', 'جستجو کنید')}
+  />
+</section>
+
+
 
         <section className="flex flex-col gap-6" ref={parent}>
           <article>
@@ -163,9 +166,7 @@ export default function FormElements({ isUpdate }: Props) {
                   return (
                     <DraggableButton
                       key={element.id}
-                      text={t(`formElements.${element.type}`, {
-                        defaultValue: element.title,
-                      })}
+                      text={element.title}
                       type={element.type}
                       Icon={Icon}
                     />

@@ -40,9 +40,10 @@
     "searching": "Search it",
     "formElements": "Form Elements",
     "dragformElements": "drag and drop an element for creating the form.",
-    "enterTitle": "Write the title...",
+    "enterTitle": "Write the title",
     "addOption": "Add option",
-    "selectDate": "select the Date"
+    "selectDate": "select the Date",
+    "questionOrText" : "QuestionOrText"
   },
   "formElements": {
     "numeric-code": "Numeric Code",
@@ -59,7 +60,7 @@
     "slider": "Slider",
     "card-number": "Card Number",
     "iban": "IBAN"
-  },
+    },
   "createForm": {
     "title": "Create New Questionnaire",
     "description": "Create new questionnaire form including title, responder, registrar, dates, center, organization and structure",

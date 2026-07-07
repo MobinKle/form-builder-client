@@ -47,6 +47,8 @@ export default function CreateForm({ formType = 'add', form }: Props) {
   const navigate = useNavigate();
   const isDemo = pathname === '/demo';
   const queryClient = useQueryClient();
+const isRtl = i18n.language === 'fa';
+const direction = isRtl ? 'ltr' : 'rtl';
   const isViewMode = formType === 'view';
   const [isPreview, setIsPreview] = useState(isViewMode);
 
@@ -153,6 +155,7 @@ toast.error(t('formBuilder.emptyForm'));
     elements: formElements,
   };
 
+
   console.log('Form JSON:', formJson);
   console.log('Form JSON String:', JSON.stringify(formJson, null, 2));
 
@@ -161,24 +164,22 @@ toast.error(t('formBuilder.emptyForm'));
 
         >
 <section className={`mb-3 flex items-center justify-between ${i18n.language === 'en' ? 'flex-row-reverse' : ''}`}>
-<div 
-  className={`flex items-center gap-3 ${i18n.language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}
->
+<div dir={i18n.language === 'fa' ? 'rtl' : 'ltr'} className="flex items-center gap-3">
   <label className="whitespace-nowrap font-medium">
     {t('formBuilder.title')}
   </label>
 
   <Input
     required
-    dir={i18n.language === 'en' ? 'ltr' : 'rtl'} 
-    className={`h-10 w-[280px] px-3 leading-10 ${
-      i18n.language === 'en' ? 'text-left' : 'text-right'
-    }`}
+    dir="auto"
+    className="flex-1 text-start [unicode-bidi:plaintext]"
     value={formName}
     onChange={e => setFormName(e.target.value)}
-    placeholder={t('formBuilder.enterTitle')} 
+    placeholder={t('formBuilder.enterTitle')}
   />
 </div>
+
+
 
 
 
@@ -202,6 +203,7 @@ toast.error(t('formBuilder.emptyForm'));
     </div>
   </div>
 </section>
+
           {isPreview ? (
             <FormPreview />
           ) : (
@@ -211,15 +213,28 @@ toast.error(t('formBuilder.emptyForm'));
               isUpdate={formType === 'edit'}
             />
           )}
-<section className={`mt-5 flex items-center gap-5 ${i18n.language === 'en' ? 'justify-start' : 'justify-end'}`}>
+          
+<section
+  dir={direction}
+  className="mt-5 flex items-center justify-start gap-5"
+>
   {isDemo && <DemoInfoCard />}
-  
+
   {form ? (
     <Button onClick={() => navigate('/my-forms')} variant="outline">
       {t('formBuilder.cancelEdit')}
     </Button>
   ) : null}
-
+  <Button
+    disabled={isDemo}
+    isLoading={isPending}
+    className={isDemo ? 'gap-2.5' : ''}
+  >
+    {isDemo && <LockIcon className="h-[18px] w-[18px]" />}
+    <span>
+      {form ? t('formBuilder.updateForm') : t('formBuilder.saveForm')}
+    </span>
+  </Button>
   {formElements.length !== 0 ? (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -227,17 +242,24 @@ toast.error(t('formBuilder.emptyForm'));
           {t('formBuilder.deleteForm')}
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent dir={i18n.language === 'fa' ? 'rtl' : 'ltr'}>
+
+      <AlertDialogContent dir={direction}>
         <AlertDialogHeader>
           <AlertDialogTitle>{t('formBuilder.deleteForm')}</AlertDialogTitle>
           <AlertDialogDescription>
             {t('formBuilder.deleteFormConfirm')}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="gap-3">
+
+        <AlertDialogFooter
+          className={`gap-3 ${
+            isRtl ? 'sm:flex-row-reverse' : 'sm:flex-row'
+          }`}
+        >
           <AlertDialogAction onClick={removeAllFormElements}>
             {t('formBuilder.deleteFormApprove')}
           </AlertDialogAction>
+
           <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -255,6 +277,7 @@ toast.error(t('formBuilder.emptyForm'));
     </span>
   </Button>
 </section>
+
 
         </form>
       </div>
