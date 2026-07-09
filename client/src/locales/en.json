@@ -118,7 +118,7 @@
     "status": {
       "active": "Active",
       "inactive": "Inactive",
-      "both": "Both",
+      "all": "All",
       "draft" : "Draft"
     },
     "header": {

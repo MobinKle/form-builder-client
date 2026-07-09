@@ -26,15 +26,16 @@ export default function FormStatusFilter({ value, onChange }: Props) {
       label: t('formManagement.status.inactive', 'غیرفعال'),
       tone: 'slate',
     },
-    {
-      value: 2,
-      label: t('formManagement.status.both', 'هر دو'),
-      tone: 'blue',
-    },
+
     {
       value: 3,
       label: t('formManagement.status.draft', 'ثبت اولیه'),
       tone: 'gray',
+    },
+        {
+      value: 2,
+      label: t('formManagement.status.all', 'همه'),
+      tone: 'blue',
     },
   ];
 
@@ -49,12 +50,15 @@ export default function FormStatusFilter({ value, onChange }: Props) {
           {OPTIONS.map((opt) => {
             const active = value === opt.value;
 
-            const activeClass =
-              opt.tone === 'green'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : opt.tone === 'blue'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-700 text-white shadow-sm';
+const activeClass =
+  opt.tone === 'green'
+    ? 'bg-emerald-600 text-white shadow-sm'
+    : opt.tone === 'blue'
+      ? 'bg-blue-600 text-white shadow-sm'
+      : opt.tone === 'gray'
+        ? 'bg-amber-500 text-white shadow-sm'
+        : 'bg-slate-700 text-white shadow-sm';
+
 
             const inactiveClass =
               'text-slate-600 hover:bg-slate-50 hover:text-slate-800';

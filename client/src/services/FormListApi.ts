@@ -12,7 +12,7 @@ export type FormItem = {
 }
 
 
-const FORM_API_URL = 'https://6a4b91bff5eab0bb6b6305f9.mockapi.io/api/Formlist/Forms'; 
+const FORM_API_URL = 'https://6a3f860c9b6d371e8380e8d5.mockapi.io/Form-Management-center-organ-structure'; 
 
 export async function getFormList(): Promise<FormItem[]> {
   try {

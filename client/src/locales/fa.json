@@ -118,7 +118,7 @@
     "status": {
       "active": "فعال",
       "inactive": "غیرفعال",
-      "both": "هر دو",
+      "all": "همه",
       "draft" : "ثبت اولیه"
     },
     "header": {
