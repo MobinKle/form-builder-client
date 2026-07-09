@@ -118,7 +118,8 @@
     "status": {
       "active": "Active",
       "inactive": "Inactive",
-      "both": "Both"
+      "both": "Both",
+      "draft" : "Draft"
     },
     "header": {
       "title": "Active Forms",

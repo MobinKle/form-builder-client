@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-export type FormStatus = 0 | 1 | 2;
+export type FormStatus = 0 | 1 | 2 | 3;
 
 type Props = {
   value: FormStatus;
@@ -14,7 +14,7 @@ export default function FormStatusFilter({ value, onChange }: Props) {
   const OPTIONS: Array<{
     value: FormStatus;
     label: string;
-    tone: 'green' | 'slate' | 'blue';
+    tone: 'green' | 'slate' | 'blue' | 'gray';
   }> = [
     {
       value: 1,
@@ -30,6 +30,11 @@ export default function FormStatusFilter({ value, onChange }: Props) {
       value: 2,
       label: t('formManagement.status.both', 'هر دو'),
       tone: 'blue',
+    },
+    {
+      value: 3,
+      label: t('formManagement.status.draft', 'ثبت اولیه'),
+      tone: 'gray',
     },
   ];
 
