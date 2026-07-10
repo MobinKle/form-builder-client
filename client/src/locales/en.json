@@ -40,10 +40,22 @@
     "searching": "Search it",
     "formElements": "Form Elements",
     "dragformElements": "drag and drop an element for creating the form.",
-    "enterTitle": "Write the title",
+    "enterTitle": "Write the title",    
     "addOption": "Add option",
     "selectDate": "select the Date",
-    "questionOrText" : "QuestionOrText"
+    "questionOrText" : "QuestionOrText",
+    "customElements" : "Custom Elements",
+    "saveDraft": "Save Draft",
+    "draftSavedSuccessfully": "The form draft was saved successfully",
+    "draftSaveError": "Failed to save the form draft",
+    "finalApprove": "Final Approval",
+    "finalApproveDescription": "After final approval, the form will no longer be a draft. Are you sure the information is correct?",
+    "confirmFinalApprove": "Yes, approve finally",
+    "finalizedSuccessfully": "The form was finalized successfully",
+    "finalizeError": "Failed to finalize the form",
+    "titleRequired": "Please enter the form title"
+    
+    
   },
   "formElements": {
     "numeric-code": "Numeric Code",
@@ -60,7 +72,7 @@
     "slider": "Slider",
     "card-number": "Card Number",
     "iban": "IBAN"
-    },
+      },
   "createForm": {
     "title": "Create New Questionnaire",
     "description": "Create new questionnaire form including title, responder, registrar, dates, center, organization and structure",

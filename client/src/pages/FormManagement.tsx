@@ -52,6 +52,18 @@ export default function FormManagement() {
       setIsSubmitting(false);
     }
   };
+const handleToggleStatus = React.useCallback((selectedForm: FormItem) => {
+  setForms((currentForms) =>
+    currentForms.map((form) =>
+      form.id === selectedForm.id
+        ? {
+            ...form,
+            status: form.status === 1 ? 0 : 1,
+          }
+        : form
+    )
+  );
+}, []);
 
   const filteredForms = React.useMemo(() => {
     if (status === 2) return forms;
@@ -93,18 +105,29 @@ export default function FormManagement() {
           <FormStatusFilter value={status} onChange={setStatus} />
         </div>
 
-        <div className="mt-6">
-          {isLoading ? (
-            <div className="flex h-40 items-center justify-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
-              <span className={isRtl ? "mr-3 text-slate-600" : "ml-3 text-slate-600"}>
-                {t("common.loading", "در حال بارگذاری...")}
-              </span>
-            </div>
-          ) : (
-            <FormList forms={filteredForms} />
-          )}
-        </div>
+<div className="mt-6">
+  {isLoading ? (
+    <div className="flex h-40 items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+
+      <span
+        className={
+          isRtl
+            ? "mr-3 text-slate-600"
+            : "ml-3 text-slate-600"
+        }
+      >
+        {t("common.loading", "در حال بارگذاری...")}
+      </span>
+    </div>
+  ) : (
+    <FormList
+      forms={filteredForms}
+      onToggleStatus={handleToggleStatus}
+    />
+  )}
+</div>
+
 
         <CreateFormModal
           open={isCreateModalOpen}
