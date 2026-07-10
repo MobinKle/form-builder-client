@@ -47,13 +47,9 @@ export default function FormCard({
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
 
   const isActive = form.status === 1;
-  const isDraft = form.status === 0;
+  const isDraft = form.status === 3;
 
-  const statusLabel = isDraft
-    ? t('formManagement.draft', 'ثبت اولیه')
-    : isActive
-      ? t('formManagement.deactivate', 'غیرفعال‌سازی')
-      : t('formManagement.activate', 'فعال‌سازی');
+const statusLabel = t('formManagement.deactivate', 'غیرفعال‌سازی');
 
   const handleStatusChange = () => {
     console.log(
@@ -141,18 +137,7 @@ export default function FormCard({
         onOpenChange={setIsStatusModalOpen}
         isRtl={isRtl}
         title={statusLabel}
-        description={
-          isDraft
-            ? t(
-                'formManagement.draftConfirm',
-                'آیا از ثبت اولیه این فرم مطمئن هستید؟'
-              )
-            : isActive
-              ? t(
-                  'formManagement.deactivateConfirm',
-                  'آیا از غیرفعال‌سازی این فرم مطمئن هستید؟'
-                )
-              : t(
+        description={t(
                   'formManagement.activateConfirm',
                   'آیا از فعال‌سازی این فرم مطمئن هستید؟'
                 )

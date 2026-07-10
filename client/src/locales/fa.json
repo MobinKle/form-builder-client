@@ -43,7 +43,18 @@
     "enterTitle" : "عنوان را وارد نمایید",
     "addOption": "اضافه کردن",
     "selectDate": "تاریخ را انتخاب نمایید",
-    "questionOrText" : "سوال یا متن"
+    "questionOrText" : "سوال یا متن",
+    "customElements": "المنت های سفارشی",
+    "saveDraft": "ذخیره اولیه",
+     "draftSavedSuccessfully": "فرم با موفقیت به‌صورت اولیه ذخیره شد",
+     "draftSaveError": "ذخیره اولیه فرم با خطا مواجه شد",
+     "finalApprove": "تأیید نهایی",
+     "finalApproveDescription": "پس از تأیید نهایی، فرم از حالت پیش‌نویس خارج می‌شود. آیا از اطلاعات واردشده مطمئن هستید؟",
+     "confirmFinalApprove": "بله، تأیید نهایی شود",
+     "finalizedSuccessfully": "فرم با موفقیت تأیید نهایی شد",
+     "finalizeError": "تأیید نهایی فرم با خطا مواجه شد",
+     "titleRequired": "عنوان فرم را وارد کنید"
+
   },
   "formElements": {
     "numeric-code": "کد عددی",
@@ -78,6 +89,7 @@
     "structure": "ساختار",
     "selectStructure": "انتخاب ساختار",
     "createQuestionnaire": "ایجاد پرسشنامه"
+
   },
     "options": {
       "user": "کاربر",
@@ -118,7 +130,7 @@
     "status": {
       "active": "فعال",
       "inactive": "غیرفعال",
-      "both": "هر دو",
+      "all": "همه",
       "draft" : "ثبت اولیه"
     },
     "header": {

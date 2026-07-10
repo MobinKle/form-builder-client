@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import FormPlayground from '../components/create-form/FormPlayground';
 import Input from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
-import { EyeIcon, HammerIcon, LockIcon } from 'lucide-react';
+import {CheckCircle2Icon,EyeIcon,HammerIcon,LockIcon,SaveIcon,} from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,6 +58,14 @@ const direction = isRtl ? 'ltr' : 'rtl';
     useState<FormElementButtonProps | null>(null);
   const [isDropped, setIsDropped] = useState(false);
 
+  type SaveAction = 'draft' | 'final';
+
+   const DRAFT_STATUS_CODE = 3;
+    const FINAL_STATUS_CODE = 1;
+
+const [savedFormId, setSavedFormId] = useState<string | undefined>(id);
+
+
   const addFormElement = useFormPlaygroundStore(state => state.addFormElement);
   const removeAllFormElements = useFormPlaygroundStore(
     state => state.removeAllFormElements,
@@ -83,37 +91,92 @@ useEffect(() => {
     }),
   );
 
-  const axiosPrivate = useAxiosPrivate();
-  const { mutate, isPending } = useMutation({
-    mutationFn: () =>
-      axiosPrivate({
-        url: formType === 'add' ? '/forms' : '/forms/' + id,
-        method: formType === 'add' ? 'post' : 'patch',
-        data: {
-          name: formName,
-          elements: formElements,
-        },
-      }),
-    onSuccess: () => {
-      if (formType === 'edit') navigate('/my-forms');
-      queryClient.invalidateQueries({
-        queryKey: ['forms'],
+const axiosPrivate = useAxiosPrivate();
+
+const {
+  mutate,
+  isPending,
+  variables: pendingAction,
+} = useMutation({
+  mutationFn: async (action: SaveAction) => {
+    let targetFormId = savedFormId;
+
+    const draftPayload = {
+      name: formName.trim(),
+      elements: formElements,
+      statusCode: DRAFT_STATUS_CODE,
+    };
+
+    if (targetFormId) {
+      await axiosPrivate.patch(`/forms/${targetFormId}`, draftPayload);
+    } else {
+      const response = await axiosPrivate.post('/forms', draftPayload);
+
+      targetFormId =
+        response.data?.id ??
+        response.data?.data?.id ??
+        response.data?.form?.id;
+
+      if (!targetFormId) {
+        throw new Error('Form id was not returned by the server');
+      }
+    }
+
+    if (action === 'final') {
+      await axiosPrivate.patch(`/forms/${targetFormId}`, {
+        statusCode: FINAL_STATUS_CODE,
       });
-      setFormName('');
-      removeAllFormElements();
-toast.success(
-  formType === 'add'
-    ? t('formBuilder.createdSuccessfully')
-    : t('formBuilder.updatedSuccessfully'),
-);
-    },
-    onError: () =>
-  toast.error(
-    formType === 'add'
-      ? t('formBuilder.createError')
-      : t('formBuilder.updateError'),
-  ),
-  });
+    }
+
+    return {
+      id: String(targetFormId),
+      action,
+    };
+  },
+
+  onSuccess: ({ id: savedId, action }) => {
+    setSavedFormId(savedId);
+
+    queryClient.invalidateQueries({
+      queryKey: ['forms'],
+    });
+
+    if (action === 'draft') {
+      toast.success(t('formBuilder.draftSavedSuccessfully'));
+      return;
+    }
+
+    toast.success(t('formBuilder.finalizedSuccessfully'));
+
+    setFormName('');
+    removeAllFormElements();
+    navigate('/my-forms');
+  },
+
+  onError: (_error, action) => {
+    toast.error(
+      action === 'final'
+        ? t('formBuilder.finalizeError')
+        : t('formBuilder.draftSaveError'),
+    );
+  },
+});
+const saveForm = (action: SaveAction) => {
+  if (isViewMode || isDemo || isPending) return;
+
+  if (!formName.trim()) {
+    toast.error(t('formBuilder.titleRequired'));
+    return;
+  }
+
+  if (formElements.length === 0) {
+    toast.error(t('formBuilder.emptyForm'));
+    return;
+  }
+
+  mutate(action);
+};
+
 
   return (
     <DndContext
@@ -140,27 +203,11 @@ toast.success(
   <FormElements isUpdate={formType === 'edit'} />
         <form
           className="flex flex-grow flex-col"
-onSubmit={e => {
-  e.preventDefault();
-  if (isViewMode) {
-    return;
-  }
-  if (formElements.length === 0) {
-toast.error(t('formBuilder.emptyForm'));
-    return;
-  }
-
-  const formJson = {
-    name: formName,
-    elements: formElements,
-  };
-
-
-  console.log('Form JSON:', formJson);
-  console.log('Form JSON String:', JSON.stringify(formJson, null, 2));
-
-  mutate();
+onSubmit={event => {
+  event.preventDefault();
+  saveForm('draft');
 }}
+
 
         >
 <section className={`mb-3 flex items-center justify-between ${i18n.language === 'en' ? 'flex-row-reverse' : ''}`}>
@@ -225,46 +272,69 @@ toast.error(t('formBuilder.emptyForm'));
       {t('formBuilder.cancelEdit')}
     </Button>
   ) : null}
-  <Button
-    disabled={isDemo || isViewMode}
-    isLoading={isPending}
-    className={isDemo  ? 'gap-2.5' : ''}
-  >
-    {(isDemo || isViewMode) && <LockIcon className="h-[18px] w-[18px]" />}
-    <span>
-      {form ? t('formBuilder.updateForm') : t('formBuilder.saveForm')}
-    </span>
-  </Button>
-  {formElements.length !== 0 ? (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button type="button" variant="destructive">
-          {t('formBuilder.deleteForm')}
-        </Button>
-      </AlertDialogTrigger>
+ <Button
+  type="submit"
+  variant="outline"
+  disabled={isDemo || isViewMode || isPending}
+  isLoading={isPending && pendingAction === 'draft'}
+  className="gap-2"
+>
+  {(isDemo || isViewMode) ? (
+    <LockIcon className="h-[18px] w-[18px]" />
+  ) : (
+    <SaveIcon className="h-[18px] w-[18px]" />
+  )}
 
-      <AlertDialogContent dir={direction}>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{t('formBuilder.deleteForm')}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {t('formBuilder.deleteFormConfirm')}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+  <span>{t('formBuilder.saveDraft')}</span>
+</Button>
 
-        <AlertDialogFooter
-          className={`gap-3 ${
-            isRtl ? 'sm:flex-row-reverse' : 'sm:flex-row'
-          }`}
-        >
-          <AlertDialogAction onClick={removeAllFormElements}>
-            {t('formBuilder.deleteFormApprove')}
-          </AlertDialogAction>
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button
+      type="button"
+      disabled={isDemo || isViewMode || isPending}
+      className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+    >
+      {isPending && pendingAction === 'final' ? (
+        <span className="h-[18px] w-[18px] animate-spin rounded-full border-2 border-white border-t-transparent" />
+      ) : (
+        <CheckCircle2Icon className="h-[18px] w-[18px]" />
+      )}
 
-          <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  ) : null}
+      <span>{t('formBuilder.finalApprove')}</span>
+    </Button>
+  </AlertDialogTrigger>
+
+  <AlertDialogContent dir={direction}>
+    <AlertDialogHeader>
+      <AlertDialogTitle>
+        {t('formBuilder.finalApprove')}
+      </AlertDialogTitle>
+
+      <AlertDialogDescription>
+        {t('formBuilder.finalApproveDescription')}
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+
+    <AlertDialogFooter
+      className={`gap-3 ${
+        isRtl ? 'sm:flex-row-reverse' : 'sm:flex-row'
+      }`}
+    >
+      <AlertDialogAction
+        disabled={isPending}
+        onClick={() => saveForm('final')}
+        className="bg-emerald-600 hover:bg-emerald-700"
+      >
+        {t('formBuilder.confirmFinalApprove')}
+      </AlertDialogAction>
+
+      <AlertDialogCancel disabled={isPending}>
+        {t('common.cancel')}
+      </AlertDialogCancel>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
 
 </section>
 
