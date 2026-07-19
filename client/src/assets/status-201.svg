@@ -1,0 +1,17 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="420" rx="28" fill="#ECFDF5"/>
+  <circle cx="320" cy="150" r="74" fill="#D1FAE5"/>
+  <circle cx="320" cy="150" r="54" fill="#10B981"/>
+  <path d="M320 123V177" stroke="white" stroke-width="12" stroke-linecap="round"/>
+  <path d="M293 150H347" stroke="white" stroke-width="12" stroke-linecap="round"/>
+  
+  <text x="320" y="275" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800" fill="#065F46">
+    201
+  </text>
+  <text x="320" y="320" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#064E3B">
+    Created
+  </text>
+  <text x="320" y="354" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#047857">
+    Resource created successfully
+  </text>
+</svg>

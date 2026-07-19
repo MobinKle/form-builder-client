@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+  <rect width="750" height="500" rx="32" fill="#F0FDF4"/>
+
+  <g id="status-200-background">
+    <circle cx="375" cy="170" r="88" fill="#DCFCE7"/>
+    <circle cx="375" cy="170" r="64" fill="#22C55E"/>
+    <path
+      d="M346.5 171L365 189.5L404.5 150"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="14"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+
+  <g id="status-200-content">
+    <text
+      x="375"
+      y="325"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="84"
+      font-weight="800"
+      fill="#166534"
+    >
+      200
+    </text>
+
+    <text
+      x="375"
+      y="378"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="28"
+      font-weight="700"
+      fill="#14532D"
+    >
+      Success
+    </text>
+
+    <text
+      x="375"
+      y="417"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="18"
+      fill="#15803D"
+    >
+      Request completed successfully
+    </text>
+  </g>
+</svg>

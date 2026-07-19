@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+  <rect width="750" height="500" rx="32" fill="#FFFBEB"/>
+
+  <g id="status-400-background">
+    <circle cx="375" cy="170" r="88" fill="#FEF3C7"/>
+
+    <path d="M375 101L449 239H301L375 101Z" fill="#F59E0B"/>
+
+    <path
+      d="M375 146V184"
+      stroke="#FFFFFF"
+      stroke-width="12"
+      stroke-linecap="round"
+    />
+
+    <circle cx="375" cy="210" r="7" fill="#FFFFFF"/>
+  </g>
+
+  <g id="status-400-content">
+    <text
+      x="375"
+      y="325"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="84"
+      font-weight="800"
+      fill="#92400E"
+    >
+      400
+    </text>
+
+    <text
+      x="375"
+      y="378"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="28"
+      font-weight="700"
+      fill="#78350F"
+    >
+      Bad Request
+    </text>
+
+    <text
+      x="375"
+      y="417"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="18"
+      fill="#B45309"
+    >
+      Invalid request data
+    </text>
+  </g>
+</svg>

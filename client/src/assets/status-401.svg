@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+  <rect width="750" height="500" rx="32" fill="#FFF7ED"/>
+
+  <g id="status-401-background">
+    <circle cx="375" cy="170" r="88" fill="#FFEDD5"/>
+
+    <rect
+      x="319"
+      y="154"
+      width="112"
+      height="78"
+      rx="16"
+      fill="#F97316"
+    />
+
+    <path
+      d="M342 154V135C342 116.775 356.775 102 375 102C393.225 102 408 116.775 408 135V154"
+      stroke="#EA580C"
+      stroke-width="14"
+      stroke-linecap="round"
+    />
+
+    <circle cx="375" cy="190" r="9" fill="#FFFFFF"/>
+
+    <path
+      d="M375 200V213"
+      stroke="#FFFFFF"
+      stroke-width="9"
+      stroke-linecap="round"
+    />
+  </g>
+
+  <g id="status-401-content">
+    <text
+      x="375"
+      y="325"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="84"
+      font-weight="800"
+      fill="#9A3412"
+    >
+      401
+    </text>
+
+    <text
+      x="375"
+      y="378"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="28"
+      font-weight="700"
+      fill="#7C2D12"
+    >
+      Unauthorized
+    </text>
+
+    <text
+      x="375"
+      y="417"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="18"
+      fill="#C2410C"
+    >
+      Authentication is required
+    </text>
+  </g>
+</svg>

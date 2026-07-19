@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+  <rect width="750" height="500" rx="32" fill="#FEF2F2"/>
+
+  <g id="status-500-background">
+    <circle cx="375" cy="170" r="88" fill="#FEE2E2"/>
+
+    <rect
+      x="311"
+      y="120"
+      width="128"
+      height="100"
+      rx="21"
+      fill="#EF4444"
+    />
+
+    <path
+      d="M337 151H413"
+      stroke="#FFFFFF"
+      stroke-width="12"
+      stroke-linecap="round"
+    />
+
+    <path
+      d="M337 187H413"
+      stroke="#FFFFFF"
+      stroke-width="12"
+      stroke-linecap="round"
+    />
+
+    <circle cx="342" cy="151" r="5" fill="#B91C1C"/>
+
+    <circle cx="342" cy="187" r="5" fill="#B91C1C"/>
+
+    <path
+      d="M304 239L446 101"
+      stroke="#DC2626"
+      stroke-width="12"
+      stroke-linecap="round"
+    />
+  </g>
+
+  <g id="status-500-content">
+    <text
+      x="375"
+      y="325"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="84"
+      font-weight="800"
+      fill="#991B1B"
+    >
+      500
+    </text>
+
+    <text
+      x="375"
+      y="378"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="28"
+      font-weight="700"
+      fill="#7F1D1D"
+    >
+      Server Error
+    </text>
+
+    <text
+      x="375"
+      y="417"
+      text-anchor="middle"
+      font-family="Inter, Arial, sans-serif"
+      font-size="18"
+      fill="#DC2626"
+    >
+      Something went wrong on the server
+    </text>
+  </g>
+</svg>
