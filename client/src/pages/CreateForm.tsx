@@ -48,7 +48,7 @@ export default function CreateForm({ formType = 'add', form }: Props) {
   const isDemo = pathname === '/demo';
   const queryClient = useQueryClient();
 const isRtl = i18n.language === 'fa';
-const direction = isRtl ? 'ltr' : 'rtl';
+const direction = isRtl ? 'rtl' : 'ltr';
   const isViewMode = formType === 'view';
   const [isPreview, setIsPreview] = useState(isViewMode);
 
@@ -189,15 +189,16 @@ const saveForm = (action: SaveAction) => {
         setActiveButton(null);
         setIsDropped(false);
       }}
-      onDragEnd={({ over, active }) => {
-        setActiveButton(null);
-        if (!over) return;
-        addFormElement(
-          active.data.current?.element.text as string,
-          active.id as string,
-        );
-        setIsDropped(true);
-      }}
+onDragEnd={({ over, active }) => {
+  setActiveButton(null);
+  if (!over) return;
+  addFormElement(
+    active.data.current?.element.text as string,
+    active.id as string,
+  );
+  setIsDropped(true);
+}}
+
     >
 <div className={`flex gap-12 ${i18n.language === 'en' ? 'flex-row-reverse' : 'flex-row'}`}>
   <FormElements isUpdate={formType === 'edit'} />

@@ -10,13 +10,14 @@ export interface FormElementButtonProps {
   text: string;
   type: string;
   Icon: IconType;
+  className?: string;
 }
 
 export const FormElementButton = ({
   text,
   Icon,
   className = '',
-}: FormElementButtonProps & { className?: string }) => (
+}: FormElementButtonProps) => (
   <Button
     type="button"
     variant="secondary"
@@ -50,19 +51,19 @@ export const FormElementButton = ({
   </Button>
 );
 
-export default function DraggableButton(props: FormElementButtonProps) {
-  const { text, type } = props;
-
+export default function DraggableButton({
+  text,
+  type,
+  Icon,
+}: FormElementButtonProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: type,
     data: {
       element: {
-        ...props,
         text,
         type,
+        Icon,
       },
-      text,
-      type,
     },
   });
 
@@ -77,8 +78,10 @@ export default function DraggableButton(props: FormElementButtonProps) {
       {...attributes}
     >
       <FormElementButton
+        text={text}
+        type={type}
+        Icon={Icon}
         className="h-full cursor-grab select-none active:cursor-grabbing"
-        {...props}
       />
     </li>
   );

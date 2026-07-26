@@ -119,6 +119,7 @@ const handleStatusChange = () => {
             label={t('common.edit', 'ویرایش')}
             icon={<PencilSvg className="h-4 w-4" />}
             color="blue"
+            disabled={!isDraft}
             onClick={() => onEdit?.(form)}
           />
 
