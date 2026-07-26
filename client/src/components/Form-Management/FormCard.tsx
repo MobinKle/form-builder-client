@@ -49,21 +49,20 @@ export default function FormCard({
   const isActive = form.status === 1;
   const isDraft = form.status === 3;
 
+  const canDeactivate = isActive;
+
+
 const statusLabel = t('formManagement.deactivate', 'غیرفعال‌سازی');
 
-  const handleStatusChange = () => {
-    console.log(
-      isDraft
-        ? 'Draft form action:'
-        : isActive
-          ? 'Deactivate form:'
-          : 'Activate form:',
-      form
-    );
+const handleStatusChange = () => {
+  if (!canDeactivate) return;
 
-    onToggleStatus?.(form);
-    setIsStatusModalOpen(false);
-  };
+  console.log('Deactivate form:', form);
+
+  onToggleStatus?.(form);
+  setIsStatusModalOpen(false);
+};
+
 
   return (
     <>
@@ -123,12 +122,17 @@ const statusLabel = t('formManagement.deactivate', 'غیرفعال‌سازی');
             onClick={() => onEdit?.(form)}
           />
 
-          <ActionButton
-            label={statusLabel}
-            icon={<PowerSvg className="h-4 w-4" />}
-            color="red"
-            onClick={() => setIsStatusModalOpen(true)}
-          />
+<ActionButton
+  label={statusLabel}
+  icon={<PowerSvg className="h-4 w-4" />}
+  color="red"
+  disabled={!canDeactivate}
+  onClick={() => {
+    if (!canDeactivate) return;
+    setIsStatusModalOpen(true);
+  }}
+/>
+
         </div>
       </div>
 

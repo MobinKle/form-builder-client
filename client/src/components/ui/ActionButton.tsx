@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 type ActionButtonProps = {
   label: string;
   icon: ReactNode;
+  disabled?: boolean;
   color?: 'emerald' | 'blue' | 'red';
   onClick?: () => void;
 };
@@ -16,14 +17,21 @@ const colorClasses = {
 export default function ActionButton({
   label,
   icon,
+  disabled = false,
   color = 'blue',
   onClick,
 }: ActionButtonProps) {
   return (
     <button
       type="button"
-      onClick={onClick}
-      className={`flex items-center gap-1.5 transition-colors ${colorClasses[color]}`}
+      disabled={disabled}
+      onClick={disabled ? undefined : onClick}
+      className={[
+        'flex items-center gap-1.5 transition-colors',
+        disabled
+          ? 'cursor-not-allowed text-slate-400 opacity-60'
+          : `cursor-pointer ${colorClasses[color]}`,
+      ].join(' ')}
     >
       {icon}
       <span>{label}</span>
