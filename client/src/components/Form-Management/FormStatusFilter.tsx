@@ -16,6 +16,11 @@ export default function FormStatusFilter({ value, onChange }: Props) {
     label: string;
     tone: 'green' | 'slate' | 'blue' | 'gray';
   }> = [
+        {
+      value: 3,
+      label: t('formManagement.status.draft', 'ثبت اولیه'),
+      tone: 'gray',
+    },
     {
       value: 1,
       label: t('formManagement.status.active', 'فعال'),
@@ -27,11 +32,6 @@ export default function FormStatusFilter({ value, onChange }: Props) {
       tone: 'slate',
     },
 
-    {
-      value: 3,
-      label: t('formManagement.status.draft', 'ثبت اولیه'),
-      tone: 'gray',
-    },
         {
       value: 2,
       label: t('formManagement.status.all', 'همه'),

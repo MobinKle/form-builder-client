@@ -14,7 +14,7 @@ type AnswerTypeApiItem = {
 };
 
 const FORM_ELEMENTS_URL =
-  'https://localhost:7163/api/surveys/questionnaires/answer-types';
+  'https://localhost:7163/api/surveys/getAanswerTypes';
 
 const answerTypeUiMap: Record<string, { type: string; icon: string }> = {
   Numeric: {

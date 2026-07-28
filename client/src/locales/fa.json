@@ -44,7 +44,7 @@
     "addOption": "اضافه کردن",
     "selectDate": "تاریخ را انتخاب نمایید",
     "questionOrText" : "سوال یا متن",
-    "customElements": "المنت های سفارشی",
+    "customElements": "المان های سفارشی",
     "saveDraft": "ذخیره اولیه",
     "draftSavedSuccessfully": "فرم با موفقیت به‌صورت اولیه ذخیره شد",
     "draftSaveError": "ذخیره اولیه فرم با خطا مواجه شد",
@@ -137,7 +137,7 @@
       "draft" : "ثبت اولیه"
     },
     "header": {
-      "title": "پرسشنامه‌های فعال",
+      "title": "پرسشنامه‌های من",
       "description": "مدیریت و مشاهده پرسشنامه‌های طراحی شده"
     }
   }

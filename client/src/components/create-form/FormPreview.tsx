@@ -128,7 +128,7 @@ export default function FormPreview() {
                         </li>
                       ))}
                     </ul>
-                  ) : group.section ? (
+                  ) : group.section ? ( 
                     <div className="rounded-xl border border-dashed border-slate-200 bg-white/60 p-4 text-center text-sm text-muted-foreground">
                       {t(
                         'formBuilder.emptySection',

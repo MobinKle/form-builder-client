@@ -126,6 +126,228 @@ type SelectFieldProps = {
   isRtl: boolean;
   disabled?: boolean;
 };
+type MultiSelectFieldProps = {
+  label: string;
+  value: string[];
+  placeholder: string;
+  options: SelectOption[];
+  onChange: (value: string[]) => void;
+  error?: string;
+  required?: boolean;
+  isRtl: boolean;
+  disabled?: boolean;
+};
+
+function MultiSelectField({
+  label,
+  value,
+  placeholder,
+  options,
+  onChange,
+  error,
+  required,
+  isRtl,
+  disabled = false,
+}: MultiSelectFieldProps) {
+  const { t } = useTranslation();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+ const selectedOptions = options.filter(option =>
+  value.includes(option.value),
+);
+
+const isAllSelected = options.length > 0 && value.length === options.length;
+const hasSelectedItems = value.length > 0;
+
+const selectAll = () => {
+  onChange(options.map(option => option.value));
+};
+
+const clearAll = () => {
+  onChange([]);
+};
+
+const toggleOption = (optionValue: string) => {
+  if (value.includes(optionValue)) {
+    onChange(value.filter(item => item !== optionValue));
+  } else {
+    onChange([...value, optionValue]);
+  }
+};
+
+const removeOption = (optionValue: string) => {
+  onChange(value.filter(item => item !== optionValue));
+};
+
+
+  return (
+    <div ref={containerRef} className="w-full">
+      <label
+        className={cn(
+          'mb-2 block text-sm font-medium text-foreground',
+          isRtl ? 'text-right' : 'text-left',
+        )}
+      >
+        {label}
+        {required && <RequiredMark isRtl={isRtl} />}
+      </label>
+
+      <div className="relative">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => setIsOpen(prev => !prev)}
+          className={cn(
+            'flex min-h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm outline-none transition-colors',
+            'focus:border-primary focus:ring-1 focus:ring-primary',
+            isRtl ? 'text-right' : 'text-left',
+            disabled && 'cursor-not-allowed opacity-60',
+            error &&
+              'border-destructive focus:border-destructive focus:ring-destructive',
+          )}
+        >
+          <span
+            className={cn(
+              'truncate',
+              selectedOptions.length > 0
+                ? 'text-foreground'
+                : 'text-muted-foreground',
+            )}
+          >
+            {selectedOptions.length > 0
+              ? selectedOptions.map(option => option.label).join('، ')
+              : placeholder}
+          </span>
+
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+        </button>
+
+      {isOpen && !disabled && (
+  <div
+    className={cn(
+      'absolute top-[calc(100%+8px)] z-[80] max-h-64 w-full overflow-y-auto rounded-lg border bg-background p-2 shadow-lg',
+      isRtl ? 'right-0' : 'left-0',
+    )}
+  >
+    {options.length > 0 && (
+      <div
+        className={cn(
+          'mb-2 flex items-center gap-2 border-b border-border pb-2',
+          isRtl ? 'justify-start' : 'justify-end',
+        )}
+      >
+        <button
+          type="button"
+          disabled={isAllSelected}
+          onClick={selectAll}
+          className={cn(
+            'rounded-md px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10',
+            isAllSelected &&
+              'cursor-not-allowed opacity-50 hover:bg-transparent',
+          )}
+        >
+          {t('common.selectAll', 'انتخاب همه')}
+        </button>
+
+        <button
+          type="button"
+          disabled={!hasSelectedItems}
+          onClick={clearAll}
+          className={cn(
+            'rounded-md px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10',
+            !hasSelectedItems &&
+              'cursor-not-allowed opacity-50 hover:bg-transparent',
+          )}
+        >
+          {t('common.clearAll', 'حذف همه')}
+        </button>
+      </div>
+    )}
+
+    {options.length === 0 ? (
+      <p
+        className={cn(
+          'px-3 py-2 text-sm text-muted-foreground',
+          isRtl ? 'text-right' : 'text-left',
+        )}
+      >
+        {t('common.noOptions', 'گزینه‌ای وجود ندارد')}
+      </p>
+    ) : (
+      options.map(option => {
+        const checked = value.includes(option.value);
+
+        return (
+          <label
+            key={option.value}
+            className={cn(
+              'flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-secondary',
+              isRtl ? 'flex-row-reverse text-right' : 'text-left',
+            )}
+          >
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={() => toggleOption(option.value)}
+              className="h-4 w-4 rounded border-input accent-primary"
+            />
+
+            <span className="flex-1">{option.label}</span>
+          </label>
+        );
+      })
+    )}
+  </div>
+)}
+      </div>
+
+      {selectedOptions.length > 0 && (
+        <div
+          className={cn(
+            'mt-2 flex flex-wrap gap-2',
+            isRtl ? 'justify-end' : 'justify-start',
+          )}
+        >
+          {selectedOptions.map(option => (
+            <span
+              key={option.value}
+              className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs text-primary"
+            >
+              {option.label}
+              <button
+                type="button"
+                onClick={() => removeOption(option.value)}
+                className="rounded-full hover:bg-primary/20"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      <FieldError message={error} isRtl={isRtl} />
+    </div>
+  );
+}
 
 function SelectField({
   label,
@@ -543,53 +765,55 @@ React.useEffect(() => {
 
             </div>
 
-            <SelectField
-              required
-              isRtl={isRtl}
-              disabled={optionsLoading}
-              label={t('createForm.center', 'مرکز')}
-              placeholder={
-                optionsLoading
-                  ? t('common.loading', 'در حال بارگذاری...')
-                  : t('createForm.selectCenter', 'انتخاب مرکز')
-              }
-              value={values.center}
-              options={centerOptions}
-              error={errors.center}
-              onChange={value => updateValue('center', value)}
-            />
+<MultiSelectField
+  required
+  isRtl={isRtl}
+  disabled={optionsLoading}
+  label={t('createForm.center', 'مرکز')}
+  placeholder={
+    optionsLoading
+      ? t('common.loading', 'در حال بارگذاری...')
+      : t('createForm.selectCenter', 'انتخاب مرکز')
+  }
+  value={values.center}
+  options={centerOptions}
+  error={errors.center}
+  onChange={value => updateValue('center', value)}
+/>
 
-            <SelectField
-              required
-              isRtl={isRtl}
-              disabled={optionsLoading}
-              label={t('createForm.organization', 'سازمان')}
-              placeholder={
-                optionsLoading
-                  ? t('common.loading', 'در حال بارگذاری...')
-                  : t('createForm.selectOrganization', 'انتخاب سازمان')
-              }
-              value={values.organization}
-              options={organizationOptions}
-              error={errors.organization}
-              onChange={value => updateValue('organization', value)}
-            />
+<MultiSelectField
+  required
+  isRtl={isRtl}
+  disabled={optionsLoading}
+  label={t('createForm.organization', 'سازمان')}
+  placeholder={
+    optionsLoading
+      ? t('common.loading', 'در حال بارگذاری...')
+      : t('createForm.selectOrganization', 'انتخاب سازمان')
+  }
+  value={values.organization}
+  options={organizationOptions}
+  error={errors.organization}
+  onChange={value => updateValue('organization', value)}
+/>
 
-            <SelectField
-              required
-              isRtl={isRtl}
-              disabled={optionsLoading}
-              label={t('createForm.structure', 'ساختار')}
-              placeholder={
-                optionsLoading
-                  ? t('common.loading', 'در حال بارگذاری...')
-                  : t('createForm.selectStructure', 'انتخاب ساختار')
-              }
-              value={values.structure}
-              options={structureOptions}
-              error={errors.structure}
-              onChange={value => updateValue('structure', value)}
-            />
+
+<MultiSelectField
+  required
+  isRtl={isRtl}
+  disabled={optionsLoading}
+  label={t('createForm.structure', 'ساختار')}
+  placeholder={
+    optionsLoading
+      ? t('common.loading', 'در حال بارگذاری...')
+      : t('createForm.selectStructure', 'انتخاب ساختار')
+  }
+  value={values.structure}
+  options={structureOptions}
+  error={errors.structure}
+  onChange={value => updateValue('structure', value)}
+/>
+
 
             <div
               className={cn(
