@@ -22,6 +22,7 @@ import {
 import { ScrollArea } from '../ui/ScrollArea';
 import SearchInput from '../shared/SearchInput';
 import DraggableButton from './DraggableButton';
+import FormStructureElements from './FormStructureElements';
 import {
   getFormElements,
   type ApiFormElement,
@@ -58,7 +59,8 @@ export default function FormElements({ isUpdate = false }: Props) {
   const [error, setError] = useState('');
 
   const query = searchParams.get('query') ?? '';
-  const currentLanguage = i18n.resolvedLanguage ?? i18n.language;
+  const currentLanguage =
+    i18n.resolvedLanguage ?? i18n.language;
   const direction = i18n.dir(currentLanguage);
   const isRtl = direction === 'rtl';
 
@@ -99,15 +101,19 @@ export default function FormElements({ isUpdate = false }: Props) {
   }, [t]);
 
   const filteredElements = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase(currentLanguage);
+    const normalizedQuery = query
+      .trim()
+      .toLocaleLowerCase(currentLanguage);
 
     if (!normalizedQuery) {
       return elements;
     }
 
     return elements.filter(element => {
-      const title = (element.title ?? '').toLocaleLowerCase(currentLanguage);
-      const type = (element.type ?? '').toLocaleLowerCase(currentLanguage);
+      const title = (element.title ?? '')
+        .toLocaleLowerCase(currentLanguage);
+      const type = (element.type ?? '')
+        .toLocaleLowerCase(currentLanguage);
 
       return (
         title.includes(normalizedQuery) ||
@@ -116,20 +122,36 @@ export default function FormElements({ isUpdate = false }: Props) {
     });
   }, [currentLanguage, elements, query]);
 
+  const getElementTitle = (element: ApiFormElement) => {
+    const title = element.title?.trim();
+
+    if (title) {
+      return title;
+    }
+
+    return t(
+      'formBuilder.untitledElement',
+      'المنت بدون عنوان',
+    );
+  };
+
   return (
     <ScrollArea
       dir={direction}
-      className={`${
+      className={`$${
         isUpdate
           ? 'h-[calc(100vh-139px)]'
           : 'h-[calc(100vh-104px)]'
-      } shrink-0 ${isRtl ? 'pr-[26px]' : 'pl-[26px]'}`}
+      } shrink-0 $${isRtl ? 'pr-[26px]' : 'pl-[26px]'}`}
     >
       <aside dir={direction} className="relative w-80">
         <section className="sticky top-0 z-10 space-y-5 bg-white pb-5 text-start">
           <div className="space-y-1">
             <h1 className="text-start text-lg font-semibold">
-              {t('formBuilder.formElements', 'المنت‌های فرم')}
+              {t(
+                'formBuilder.formElements',
+                'المنت‌های فرم',
+              )}
             </h1>
 
             <h2 className="text-start text-sm text-muted-foreground">
@@ -154,6 +176,9 @@ export default function FormElements({ isUpdate = false }: Props) {
           ref={animationParent}
           className="flex flex-col gap-6"
         >
+          {/* المان‌های ساختاری بالای فیلدهای معمولی */}
+          <FormStructureElements query={query} />
+
           <article>
             <h3 className="w-full text-start text-sm font-medium text-muted-foreground">
               {t(
@@ -185,12 +210,13 @@ export default function FormElements({ isUpdate = false }: Props) {
             ) : (
               <ul className="mt-3 grid grid-cols-2 gap-4">
                 {filteredElements.map(element => {
-                  const Icon = iconMap[element.type] ?? TextIcon;
+                  const Icon =
+                    iconMap[element.type] ?? TextIcon;
 
                   return (
                     <DraggableButton
                       key={element.id}
-                      text={element.title}
+                      text={getElementTitle(element)}
                       type={element.type}
                       Icon={Icon}
                     />

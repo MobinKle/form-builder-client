@@ -28,7 +28,7 @@ export type CreateFormSelectOptions = {
 };
 
 const CREATE_FORM_OPTIONS_URL =
-  'https://6a3f860c9b6d371e8380e8d5.mockapi.io/Form-Management-center-organ-structure';
+  'https://6a3f860c9b6d371e8380e8d5.mockapi.io/form-elements';
 
 function normalizeApiResponse(data: unknown): CreateFormOptionsResponse {
   if (Array.isArray(data)) {

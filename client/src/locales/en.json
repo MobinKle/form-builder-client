@@ -53,9 +53,11 @@
     "confirmFinalApprove": "Yes, approve finally",
     "finalizedSuccessfully": "The form was finalized successfully",
     "finalizeError": "Failed to finalize the form",
-    "titleRequired": "Please enter the form title"
-    
-    
+    "titleRequired": "Please enter the form title",
+    "structureElements": "Form structure",
+    "section": "Section / Page"   ,
+    "sectionTitlePlaceholder": "For example: General information",
+    "sectionDescriptionPlaceholder": "Short description for this section"
   },
   "formElements": {
     "numeric-code": "Numeric Code",
@@ -134,7 +136,7 @@
       "draft" : "Draft"
     },
     "header": {
-      "title": "Active Forms",
+      "title": "My Forms",
       "description": "Manage and review designed forms"
     }
   }

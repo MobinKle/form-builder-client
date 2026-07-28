@@ -5,9 +5,9 @@ export type CreateFormValues = {
   registrar: string;
   startDate?: Date;
   endDate?: Date;
-  center: string;
-  organization: string;
-  structure: string;
+  center: string[];
+  organization: string[];
+  structure: string[];
 };
 
 export type SelectOption = {
@@ -22,9 +22,9 @@ export const createFormInitialValues: CreateFormValues = {
   registrar: '',
   startDate: undefined,
   endDate: undefined,
-  center: '',
-  organization: '',
-  structure: '',
+  center: [],
+  organization: [],
+  structure: [],
 };
 
 export const validateCreateForm = (
@@ -75,21 +75,21 @@ export const validateCreateForm = (
     );
   }
 
-  if (!values.center) {
+  if (values.center.length === 0) {
     errors.center = t(
       'createForm.validation.centerRequired',
       'مرکز را انتخاب کنید',
     );
   }
 
-  if (!values.organization) {
+  if (values.organization.length === 0) {
     errors.organization = t(
       'createForm.validation.organizationRequired',
       'سازمان را انتخاب کنید',
     );
   }
 
-  if (!values.structure) {
+  if (values.structure.length === 0) {
     errors.structure = t(
       'createForm.validation.structureRequired',
       'ساختار را انتخاب کنید',

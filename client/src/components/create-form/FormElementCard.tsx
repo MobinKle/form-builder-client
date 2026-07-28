@@ -34,6 +34,8 @@ import type { ControllerRenderProps, FieldValues } from 'react-hook-form';
 
 import { useTranslation } from 'react-i18next';
 
+import { useState } from 'react';
+
 const animateLayoutChanges: AnimateLayoutChanges = args => {
   const { isSorting, wasDragging } = args;
   if (isSorting || wasDragging) return defaultAnimateLayoutChanges(args);
@@ -102,7 +104,10 @@ function normalizeType(type: string) {
     case 'شماره شبا':
     case 'iban':
       return 'iban';
-
+case 'بخش':
+case 'بخش / صفحه':
+case 'section':
+  return 'section';
     default:
       return type;
   }
@@ -118,10 +123,19 @@ const optionBuilderTypes = [
   'multi-number-choice',
 ];
 
-const noRequiredTypes = ['heading', 'description', 'switch', 'checkbox'];
-const noFieldTypes = ['heading', 'description'];
+const noRequiredTypes = [
+  'heading',
+  'description',
+  'switch',
+  'checkbox',
+  'section',
+];
+
+const noFieldTypes = ['heading', 'description', 'section'];
+
 
 const onlyNumbers = (value: string) => value.replace(/\D/g, '');
+
 
 const autoDirectionClassName = 'text-start [unicode-bidi:plaintext]';
 
@@ -136,7 +150,10 @@ export default function FormElementCard({
   isView = false,
   field,
 }: Props) {
-  const { id, label, required, options } = formElement;
+const { id, label, required, options } = formElement;
+const description =
+  (formElement as FormElementsType & { description?: string }).description ??
+  '';
   const type = normalizeType(formElement.type);
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === 'fa';
@@ -145,7 +162,12 @@ export default function FormElementCard({
     state => state.removeFormElement,
   );
   const toggleRequired = useFormPlaygroundStore(state => state.toggleRequired);
-  const updateLabel = useFormPlaygroundStore(state => state.updateLabel);
+const updateLabel = useFormPlaygroundStore(state => state.updateLabel);
+const updateDescription = useFormPlaygroundStore(
+  state => state.updateDescription,
+);
+const [previewSliderValue, setPreviewSliderValue] = useState(0);
+
 
   const {
     attributes,
@@ -202,20 +224,23 @@ export default function FormElementCard({
     />
   ) : null}
 
-<div dir="auto" className="w-full text-start [unicode-bidi:plaintext]">
-  <BubbleMenuEditor
-placeholder={
-['heading', 'description'].includes(type)
-? label
-: t('formBuilder.questionOrText', 'سوال یا متن')
-}
-content={label}
-updateHandler={html => {
-updateLabel(id, html);
-}}
-readOnly={isView}
-  />
-</div>
+{type === 'section' ? null : (
+  <div dir="auto" className="w-full text-start [unicode-bidi:plaintext]">
+    <BubbleMenuEditor
+      placeholder={
+        ['heading', 'description'].includes(type)
+          ? label
+          : t('formBuilder.questionOrText', 'سوال یا متن')
+      }
+      content={label}
+      updateHandler={html => {
+        updateLabel(id, html);
+      }}
+      readOnly={isView}
+    />
+  </div>
+)}
+
 </div>
 
 
@@ -256,7 +281,37 @@ readOnly={isView}
           )}
         </div>
 
-        {type === 'single-line' ? (
+{type === 'section' ? (
+  <div className="rounded-xl border border-dashed border-primary/30 bg-primary/5 p-4">
+    <Input
+      dir="auto"
+      className="border-0 bg-transparent px-0 text-start text-base font-semibold shadow-none [unicode-bidi:plaintext] focus-visible:ring-0"
+      value={label ?? ''}
+      placeholder={t(
+        'formBuilder.sectionTitlePlaceholder',
+        'مثلاً اطلاعات عمومی',
+      )}
+      readOnly={isView}
+      onChange={event => {
+        updateLabel(id, event.target.value);
+      }}
+    />
+
+    <Textarea
+      dir="auto"
+      className="mt-2 min-h-16 resize-none border-0 bg-transparent px-0 text-start text-sm text-muted-foreground shadow-none [unicode-bidi:plaintext] placeholder:text-muted-foreground focus-visible:ring-0"
+      value={description}
+      placeholder={t(
+        'formBuilder.sectionDescriptionPlaceholder',
+        'توضیحات کوتاه برای این بخش',
+      )}
+      readOnly={isView}
+      onChange={event => {
+        updateDescription(id, event.target.value);
+      }}
+    />
+  </div>
+) : type === 'single-line' ? (
           <Input
   dir="auto"
   className={autoDirectionClassName}
@@ -547,36 +602,38 @@ readOnly={isView}
                 })}
           />
         ) : type === 'slider' ? (
-          <div className="flex flex-col gap-2" dir={isRtl ? 'rtl' : 'ltr'}>
-            <Input
-              type="range"
-              min="0"
-              max="100"
-              step="1"
-              className="h-6 cursor-pointer"
-              required={!!field && required}
-              {...(field
-                ? {
-                    value: field.value ?? 0, 
-                    onChange: (e) => {
-                      const val = parseInt(e.target.value, 10);
-                      field.onChange(isNaN(val) ? 0 : val);
-                    },
-                  }
-                : {
-                    defaultValue: 0,
-                  })}
-            />
-            <div className="flex justify-between items-center px-1">
-              <span className="text-sm text-muted-foreground">
-                {t('formBuilder.selectedValue', 'مقدار انتخاب شده:')}
-              </span>
-              <span className="font-bold text-primary">
-                {field?.value ?? 0}
-              </span>
-            </div>
-          </div>
-        ) : type === 'card-number' ? (
+  <div className="flex flex-col gap-2" dir={isRtl ? 'rtl' : 'ltr'}>
+    <Input
+      type="range"
+      min={0}
+      max={100}
+      step={1}
+      className="h-6 cursor-pointer"
+      required={!!field && required}
+      value={field ? Number(field.value ?? 0) : previewSliderValue}
+      onChange={e => {
+        const val = Number(e.target.value);
+        const safeValue = Number.isNaN(val) ? 0 : val;
+
+        if (field) {
+          field.onChange(safeValue);
+        } else {
+          setPreviewSliderValue(safeValue);
+        }
+      }}
+    />
+
+    <div className="flex items-center justify-between text-xs text-muted-foreground">
+      <span>0</span>
+      <span className="font-medium text-foreground">
+        {field ? Number(field.value ?? 0) : previewSliderValue}
+      </span>
+      <span>100</span>
+    </div>
+  </div>
+)
+
+ : type === 'card-number' ? (
 <Input
   type="tel"
   inputMode="numeric"
